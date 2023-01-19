@@ -2,28 +2,28 @@ const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql");
 const dotenv = require("dotenv").config();
-console.log(process.env.HOST);
-const db = mysql.createConnection({
-  host: process.env.HOST,
-  user: "root",
-  password: process.env.DB_PASSWORD,
-  database: "Bookify",
-});
+// const db = mysql.createConnection({
+//   host: process.env.HOST,
+//   user: "root",
+//   password: process.env.DB_PASSWORD,
+//   database: "Bookify",
+// });
 
+const db = require("./config/db");
 //connect
-db.connect((err) => {
-  if (err) {
-    throw err;
-  }
-  console.log("MySql connected");
-});
+// db.connect((err) => {
+//   if (err) {
+//     throw err;
+//   }
+//   console.log("MySql connected");
+// });
 const app = express();
 
 // // Create DB
 
 app.use(express.json());
 
-app.get("/", (req, res) => {
+app.get("/admin", (req, res) => {
   let sql = "SELECT * FROM admin";
   db.query(sql, (err, result) => {
     if (err) throw err;
