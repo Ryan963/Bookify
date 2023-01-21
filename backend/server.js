@@ -31,9 +31,8 @@ app.get("/admin", (req, res) => {
   });
 });
 
-// const routes = require("./routes/university");
-// app.use("/", routes);
-
+app.use("/api/admin", require("./routes/adminRoutes"));
+app.use("/api/employee", require("./routes/employeeRoutes"));
 app.use(cors());
 app.listen(5000, () => {
   console.log("server has started on port 5000");
