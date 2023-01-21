@@ -16,7 +16,7 @@ const createEmployee = async (req, res) => {
     employee.password = hashedPassword;
     const query = "INSERT INTO Employee SET ?";
     // execute query to create employee
-    const [employeeInserted] = await connection.awaitQuery(query, employee);
+    const employeeInserted = await connection.awaitQuery(query, employee);
 
     const results = await connection.awaitQuery(
       "SELECT * from Employee WHERE email = ?",
