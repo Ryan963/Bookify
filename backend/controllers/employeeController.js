@@ -60,6 +60,7 @@ const getEmployeesByCompany = async (req,res) =>{
         console.error(`Connection error ${err.code}`);
       })
       const results = await connection.awaitQuery(getEmployeeFromCompany, [companyId])
+      connection.release();
       res.status(200).json({
       success: true,
       employees: results
@@ -76,12 +77,13 @@ const delEmployee = async (req, res) => {
   try {
     const { employeeId } = req.query
     const deleteEmployeeFromTable = 
-    "UPDATE Employee SET current = '0' WHERE id = ? AND current = 1"
+    "UPDATE Employee SET current = 0 WHERE id = ? AND current = 1"
     const connection = await db.awaitGetConnection();
       connection.on(`error`, (err) => {
         console.error(`Connection error ${err.code}`);
       })
       const removedEmployee = await connection.awaitQuery(deleteEmployeeFromTable, [employeeId])
+      connection.release();
       res.status(200).json({
       success: true,
       message: "Employee Removed Succesfully"
@@ -114,6 +116,7 @@ const updateEmployeeTable = async (req, res) => {
 
   const updatedEmp = await connection.awaitQuery(updateEmpTable, [updatedEmployee, employeeId]);
   console.log(updatedEmp);
+  connection.release();
   res.status(200).json({
   success: true,
   message: "Employee Updated Succesfully"
