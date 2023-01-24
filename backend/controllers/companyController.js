@@ -62,7 +62,7 @@ const updateCompany = async (req, res) => {
   }
 };
 
-
+//   Not necessary. 
 const delCompany = async (req, res) => {
 
   try {
