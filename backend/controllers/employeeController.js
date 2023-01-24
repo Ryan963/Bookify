@@ -50,11 +50,87 @@ const createEmployee = async (req, res) => {
   }
 };
 
-const delEmployee = (req, res) => {
-  const { employeeId } = req.body;
+const getEmployeesByCompany = async (req,res) =>{
+  try {
+    const { companyId } = req.query;
+    const getEmployeeFromCompany = 
+    "SELECT * FROM Employee WHERE companyId = ?"
+    const connection = await db.awaitGetConnection();
+      connection.on(`error`, (err) => {
+        console.error(`Connection error ${err.code}`);
+      })
+      const results = await connection.awaitQuery(getEmployeeFromCompany, [companyId])
+      connection.release();
+      res.status(200).json({
+      success: true,
+      employees: results
+      });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
+ 
+
+};
+
+const delEmployee = async (req, res) => {
+  try {
+    const { employeeId } = req.query
+    const deleteEmployeeFromTable = 
+    "UPDATE Employee SET current = 0 WHERE id = ? AND current = 1"
+    const connection = await db.awaitGetConnection();
+      connection.on(`error`, (err) => {
+        console.error(`Connection error ${err.code}`);
+      })
+      const removedEmployee = await connection.awaitQuery(deleteEmployeeFromTable, [employeeId])
+      connection.release();
+      res.status(200).json({
+      success: true,
+      message: "Employee Removed Succesfully"
+      });
+    
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
+
+};
+
+const updateEmployeeTable = async (req, res) => {
+  try {
+    const { updatedEmployee } = req.body
+    const { employeeId } = req.query
+    const updateEmpTable = 
+    "UPDATE Employee SET ? where id = ?"
+
+    if (updatedEmployee.email || updatedEmployee.employeeId || updatedEmployee.password){
+      res.success(400).json({
+        success: false,
+        message: "Not allowed to update the following field"
+      })
+    }
+    const connection = await db.awaitGetConnection();
+      connection.on(`error`, (err) => {
+        console.error(`Connection error ${err.code}`);
+  })
+
+  const updatedEmp = await connection.awaitQuery(updateEmpTable, [updatedEmployee, employeeId]);
+  console.log(updatedEmp);
+  connection.release();
+  res.status(200).json({
+  success: true,
+  message: "Employee Updated Succesfully"
+  });
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
 };
 
 module.exports = {
   createEmployee,
   delEmployee,
+  getEmployeesByCompany,
+  updateEmployeeTable,
 };
