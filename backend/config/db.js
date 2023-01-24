@@ -1,4 +1,4 @@
-const mysql = require("mysql");
+const mysql = require("mysql-await");
 const pool = mysql.createPool({
   host: process.env.HOST,
   user: "root",

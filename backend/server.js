@@ -31,8 +31,9 @@ app.get("/admin", (req, res) => {
   });
 });
 
-// const routes = require("./routes/university");
-// app.use("/", routes);
+app.use("/api/admin", require("./routes/adminRoutes"));
+app.use("/api/company", require("./routes/companyRoutes"));
+
 
 app.use(cors());
 app.listen(5000, () => {
