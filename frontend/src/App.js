@@ -8,11 +8,13 @@ import PrivateAdminRoute from "./components/routing/PrivateAdminRoute";
 import PrivateEmployeeRoute from "./components/routing/PrivateEmployeeRoute";
 import PrivateCustomerRoute from "./components/routing/PrivateCustomerRoute";
 import CompanyRegister from "./pages/company/Register";
-
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 function App() {
   return (
     <>
       <Router>
+        <ToastContainer />
         <div>
           <Routes>
             <Route path="/" element={<Home />} />
@@ -25,7 +27,7 @@ function App() {
             <Route element={<PrivateEmployeeRoute />}></Route>
             {/* all admin routes goes in here */}
             <Route element={<PrivateAdminRoute />}>
-              <Route path="/admin" element={<AdminHome />} />
+              <Route path="/admin/home" element={<AdminHome />} />
             </Route>
           </Routes>
         </div>

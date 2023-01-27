@@ -95,7 +95,7 @@ const getnotApprovedCompanies = async (req, res) => {
       console.error(`Connection error ${err.code}`);
     });
 
-    const query = "SELECT * FROM Company WHERE approved = 0"; // query for all not approved companies
+    const query = "SELECT * FROM Company"; // query for all companies
     const companies = await connection.awaitQuery(query); // create the connection
     connection.release(); // releases it
 
