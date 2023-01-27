@@ -11,6 +11,5 @@ router.post("/create", createCompany);
 router.delete("/delete", delCompany);
 router.put("/update", updateCompany);
 
-module.exports = router;
-
 router.get("/", getnotApprovedCompanies);
+module.exports = router;

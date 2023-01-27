@@ -17,6 +17,7 @@ const loginAdmin = async (req, res) => {
       admin = admin[0];
     } else {
       res.status(400).json({ message: "Invalid credentials" });
+      return;
     }
     connection.release();
     // check if admin exists nad compare passwords
@@ -75,6 +76,28 @@ const registerAdmin = async (req, res) => {
   }
 };
 
+const approveCompany = async (req, res) => {
+  try {
+    const { companyId } = req.body;
+    if (!companyId) {
+      res.status(200).json({ success: false, message: "id is required" });
+      return;
+    }
+    const connection = await db.awaitGetConnection();
+    connection.on(`error`, (err) => {
+      console.error(`Connection error ${err.code}`);
+    });
+
+    const query = "UPDATE Company SET approved = 1 WHERE id = ?";
+    const approvedCompany = await connection.awaitQuery(query, [companyId]);
+    connection.release();
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // helper function to generate token for the admin
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_ADMIN_SECRET, {
@@ -85,4 +108,5 @@ const generateToken = (id) => {
 module.exports = {
   loginAdmin,
   registerAdmin,
+  approveCompany,
 };
