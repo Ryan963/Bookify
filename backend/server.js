@@ -37,6 +37,10 @@ app.use("/api/employee", require("./routes/employeeRoutes"));
 app.use("/api/customer", require("./routes/customerRoutes"));
 app.use("/api/company", require("./routes/companyRoutes"));
 
+
+app.use("/api/companyService", require("./routes/companyServiceRoute"));
+app.use(cors());
+
 app.listen(5000, () => {
   console.log("server has started on port 5000");
 });
