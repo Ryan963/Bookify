@@ -1,8 +1,17 @@
 const db = require("../config/db");
-
-const { restart } = require("nodemon");
-
+const fs = require("fs");
+const { convertTo24Hour } = require("../helpers/convert-time");
+const dayArray = [
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+  "sunday",
+];
 const createCompany = async (req, res) => {
+  const homePic = req.file.path;
   try {
     // get company and company services from request body [frontend]
     const connection = await db.awaitGetConnection();
@@ -10,8 +19,15 @@ const createCompany = async (req, res) => {
     connection.on(`error`, (err) => {
       console.error(`Connection error ${err.code}`);
     });
-    const { company } = req.body;
+    const company = req.body;
 
+    for (let day of dayArray) {
+      company[`${day}Start`] = convertTo24Hour(company[`${day}Start`]);
+      company[`${day}End`] = convertTo24Hour(company[`${day}End`]);
+    }
+    company.homePic = homePic;
+    company.approved = false;
+    console.log(company);
     const query = "INSERT INTO Company SET ?";
 
     // execute query to create company
@@ -25,6 +41,11 @@ const createCompany = async (req, res) => {
     //
   } catch (error) {
     console.log(error);
+    fs.unlink(homePic, (err) => {
+      if (err) {
+        console.error(err);
+      }
+    });
     res.status(500).json({ message: error.message });
   }
 };

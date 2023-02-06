@@ -1,14 +1,6 @@
 import React from "react";
 
-const InputField = ({
-  onFocus,
-  onBlur,
-  onChange,
-  type,
-  name,
-  placeholder,
-  value,
-}) => {
+const InputField = ({ onChange, type, name, placeholder, value }) => {
   return (
     <input
       style={{
@@ -21,8 +13,6 @@ const InputField = ({
         color: "black",
       }}
       className={"focus:border-skyblue focus:border-4"}
-      onFocus={onFocus ? onFocus : ""}
-      onBlur={onBlur ? onFocus : ""}
       onChange={onChange}
       type={type}
       name={name}
