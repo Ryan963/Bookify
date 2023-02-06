@@ -3,6 +3,12 @@ import { Grid, FormControlLabel, Switch } from "@mui/material";
 import ButtonPrimary from "../../components/UI/ButtonPrimary";
 import { toast } from "react-toastify";
 import axios from "axios";
+import DropDown from "../../components/UI/DropDown";
+import { Fragment } from 'react'
+import { Menu, Transition } from '@headlessui/react'
+import { ChevronDownIcon } from '@heroicons/react/20/solid'
+import { MenuItem } from "../../components/UI/DropDown";
+
 const AdminHome = () => {
   const [companies, setCompanies] = useState(
     []
@@ -28,11 +34,12 @@ const AdminHome = () => {
     setNotApprovedFilter(!notApprovedFilter);
   };
 
-  const approveCompany = async (id) => {
+ const approveCompany = async (id) => {
+  
     try {
       const res = await axios.put("http://localhost:5000/api/admin/approve", {
         companyId: id,
-      });
+     });
       if (res.data.success) {
         setCompanies((prevCompanies) => {
           const companiesCopy = prevCompanies.map((company) => {
@@ -47,8 +54,25 @@ const AdminHome = () => {
     } catch (error) {
       console.log(error);
       toast.error("Could not approve company");
-    }
+     }
   };
+  
+  // function stringify(obj) {
+  //   let cache = [];
+  //   let str = JSON.stringify(obj, function(key, value) {
+  //     if (typeof value === "object" && value !== null) {
+  //       if (cache.indexOf(value) !== -1) {
+  //         // Circular reference found, discard key
+  //         return;
+  //       }
+  //       // Store value in our collection
+  //       cache.push(value);
+  //     }
+  //     return value;
+  //   });
+  //   cache = null; // reset the cache
+  //   return str;
+  // }
 
   return (
     <div>
@@ -125,17 +149,22 @@ const AdminHome = () => {
                       <Grid item xs={1}></Grid>
                       <Grid item xs={3}>
                         <div className="mx-8">
-                          <ButtonPrimary
-                            onClick={() => approveCompany(company.id)}
-                          >
-                            Approve
-                          </ButtonPrimary>
+                          <DropDown>
+                         <MenuItem  onClick={approveCompany} name="Approve"/> 
+
+        
+                          </DropDown>
+                          
+                      
                         </div>
                       </Grid>
                     </Grid>
                   );
+                  
                 })}
+                 
             </div>
+  
           ) : (
             <div className="text-2xl flex justify-center">
               No Companies require approval at the moment
@@ -147,4 +176,8 @@ const AdminHome = () => {
   );
 };
 
+
+
 export default AdminHome;
+
+
