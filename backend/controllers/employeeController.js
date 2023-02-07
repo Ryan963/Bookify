@@ -1,6 +1,43 @@
 const db = require("../config/db");
 const bcrypt = require("bcryptjs");
 
+const loginEmp = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const connection = await db.awaitGetConnection();
+    connection.on(`error`, (err) => {
+      console.error(`Connection error ${err.code}`);
+    });
+    const query = "SELECT * FROM employee WHERE email = ?";
+    let employee = await connection.awaitQuery(query, [email]);
+    if (employee.length > 0) {
+      employee = employee[0];
+    } else {
+      res.status(400).json({ message: "Invalid credentials" });
+      return;
+    }
+    connection.release();
+    // check if admin exists and compare passwords.
+    if (employee && employee.role === 0 && (await bcrypt.compare(password, employee.password))) {
+      res.status(200).json({
+        success: true,
+        employee: employee,
+        token: generateToken(employee.id),
+      });
+    } else if (employee && employee.role === 1 && (await bcrypt.compare(password, employee.password))) {
+      res.status(200).json({
+        success: true,
+        employee: employee,
+        token: generateManagerToken(employee.id),
+      });
+    } else {
+      res.status(400).json({ message: "Invalid credentials" });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 const createEmployee = async (req, res) => {
   try {
     // get employee and employee services from request body [frontend]
@@ -18,10 +55,7 @@ const createEmployee = async (req, res) => {
     // execute query to create employee
     const employeeInserted = await connection.awaitQuery(query, employee);
 
-    const results = await connection.awaitQuery(
-      "SELECT * from Employee WHERE email = ?",
-      [employee.email]
-    );
+    const results = await connection.awaitQuery("SELECT * from Employee WHERE email = ?", [employee.email]);
 
     let employeeId = results[0]?.id;
     // add employeeService entries
@@ -32,11 +66,8 @@ const createEmployee = async (req, res) => {
     });
     // wrap the array of arrays in another array brackets so this will be [[[employeeId, serviceId], [employeeId, serviceId]]]
     // this will allow Mysql to insert every single employeeService
-    const serviceQuery =
-      "INSERT INTO EmployeeService (employeeId, serviceId) VALUES ?";
-    const insertedServices = await connection.awaitQuery(serviceQuery, [
-      employeeServices,
-    ]);
+    const serviceQuery = "INSERT INTO EmployeeService (employeeId, serviceId) VALUES ?";
+    const insertedServices = await connection.awaitQuery(serviceQuery, [employeeServices]);
     console.log(insertedServices);
     connection.release();
     res.status(200).json({
@@ -50,82 +81,86 @@ const createEmployee = async (req, res) => {
   }
 };
 
-const getEmployeesByCompany = async (req,res) =>{
+const getEmployeesByCompany = async (req, res) => {
   try {
     const { companyId } = req.query;
-    const getEmployeeFromCompany = 
-    "SELECT * FROM Employee WHERE companyId = ?"
+    const getEmployeeFromCompany = "SELECT * FROM Employee WHERE companyId = ?";
     const connection = await db.awaitGetConnection();
-      connection.on(`error`, (err) => {
-        console.error(`Connection error ${err.code}`);
-      })
-      const results = await connection.awaitQuery(getEmployeeFromCompany, [companyId])
-      connection.release();
-      res.status(200).json({
+    connection.on(`error`, (err) => {
+      console.error(`Connection error ${err.code}`);
+    });
+    const results = await connection.awaitQuery(getEmployeeFromCompany, [companyId]);
+    connection.release();
+    res.status(200).json({
       success: true,
-      employees: results
-      });
+      employees: results,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: error.message });
   }
- 
-
 };
 
 const delEmployee = async (req, res) => {
   try {
-    const { employeeId } = req.query
-    const deleteEmployeeFromTable = 
-    "UPDATE Employee SET current = 0 WHERE id = ? AND current = 1"
+    const { employeeId } = req.query;
+    const deleteEmployeeFromTable = "UPDATE Employee SET current = 0 WHERE id = ? AND current = 1";
     const connection = await db.awaitGetConnection();
-      connection.on(`error`, (err) => {
-        console.error(`Connection error ${err.code}`);
-      })
-      const removedEmployee = await connection.awaitQuery(deleteEmployeeFromTable, [employeeId])
-      connection.release();
-      res.status(200).json({
+    connection.on(`error`, (err) => {
+      console.error(`Connection error ${err.code}`);
+    });
+    const removedEmployee = await connection.awaitQuery(deleteEmployeeFromTable, [employeeId]);
+    connection.release();
+    res.status(200).json({
       success: true,
-      message: "Employee Removed Succesfully"
-      });
-    
+      message: "Employee Removed Succesfully",
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: error.message });
   }
-
 };
 
 const updateEmployeeTable = async (req, res) => {
   try {
-    const { updatedEmployee } = req.body
-    const { employeeId } = req.query
-    const updateEmpTable = 
-    "UPDATE Employee SET ? where id = ?"
+    const { updatedEmployee } = req.body;
+    const { employeeId } = req.query;
+    const updateEmpTable = "UPDATE Employee SET ? where id = ?";
 
-    if (updatedEmployee.email || updatedEmployee.employeeId || updatedEmployee.password){
+    if (updatedEmployee.email || updatedEmployee.employeeId || updatedEmployee.password) {
       res.success(400).json({
         success: false,
-        message: "Not allowed to update the following field"
-      })
+        message: "Not allowed to update the following field",
+      });
     }
     const connection = await db.awaitGetConnection();
-      connection.on(`error`, (err) => {
-        console.error(`Connection error ${err.code}`);
-  })
+    connection.on(`error`, (err) => {
+      console.error(`Connection error ${err.code}`);
+    });
 
-  const updatedEmp = await connection.awaitQuery(updateEmpTable, [updatedEmployee, employeeId]);
-  console.log(updatedEmp);
-  connection.release();
-  res.status(200).json({
-  success: true,
-  message: "Employee Updated Succesfully"
-  });
-
+    const updatedEmp = await connection.awaitQuery(updateEmpTable, [updatedEmployee, employeeId]);
+    console.log(updatedEmp);
+    connection.release();
+    res.status(200).json({
+      success: true,
+      message: "Employee Updated Succesfully",
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: error.message });
   }
+};
+
+const generateToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_Employee_SECRET, {
+    expiresIn: "12h",
+  });
+};
+
+const generateManagerToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_EMPLOYEEADMIN_SECRET, {
+    expiresIn: "12h",
+  });
 };
 
 module.exports = {
@@ -133,4 +168,5 @@ module.exports = {
   delEmployee,
   getEmployeesByCompany,
   updateEmployeeTable,
+  loginEmp,
 };
