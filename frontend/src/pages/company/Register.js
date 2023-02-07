@@ -61,21 +61,56 @@ const InfoBlock = ({ name, value }) => {
     </div>
   );
 };
-
-const ReviewInformation = ({ name, email, number, description, homePic, mondayStart, mondayEnd, tuesdayStart, tuesdayEnd, wednesdayStart, wednesdayEnd, thursdayStart, thursdayEnd, fridayStart, fridayEnd, saturdayStart, saturdayEnd, sundayStart, sundayEnd, onClick, disabled, success }) => {
+const ReviewInformation = ({
+  name,
+  email,
+  number,
+  description,
+  homePic,
+  mondayStart,
+  mondayEnd,
+  tuesdayStart,
+  tuesdayEnd,
+  wednesdayStart,
+  wednesdayEnd,
+  thursdayStart,
+  thursdayEnd,
+  fridayStart,
+  fridayEnd,
+  saturdayStart,
+  saturdayEnd,
+  sundayStart,
+  sundayEnd,
+  onClick,
+  disabled,
+  success,
+}) => {
   return (
-    <div style={{ width: "700px" }} className="rounded-lg shadow-lg p-6 pb-8 bg-secondary text-white mt-2">
+    <div
+      style={{ width: "700px" }}
+      className="rounded-lg shadow-lg p-6 pb-8 bg-secondary text-white mt-2"
+    >
       {success ? (
         <div className="flex flex-col items-center">
-          <p className="text-lg mt-4 mb-8">Your Company has been registered successfully!</p>
+          <p className="text-lg mt-4 mb-8">
+            Your Company has been registered successfully!
+          </p>
           <FaCheckCircle color="orange" size={200} />
-          <p className="text-md mt-8 mb-4 overflow-hidden">Please wait for the approval Email, you will get the information needed for you to login and start adding more employees, branches, and services to your company.</p>
-          <p className="text-lg mt-2 mb-2">Thank you again for registering your company at Bookify!</p>
+          <p className="text-md mt-8 mb-4 overflow-hidden">
+            Please wait for the approval Email, you will get the information
+            needed for you to login and start adding more employees, branches,
+            and services to your company.
+          </p>
+          <p className="text-lg mt-2 mb-2">
+            Thank you again for registering your company at Bookify!
+          </p>
         </div>
       ) : (
         <>
-          <h2 className="text-xl font-medium mb-5 text-center">Review Your Information</h2>
-          <div className="flex justify-betweem">
+          <h2 className="text-xl font-medium mb-5 text-center">
+            Review Your Information
+          </h2>
+          <div className="flex justify-betweem ">
             <div>
               <InfoBlock name="Name" value={name} />
               <InfoBlock name="Email" value={email} />
@@ -85,13 +120,25 @@ const ReviewInformation = ({ name, email, number, description, homePic, mondaySt
                 <p className="">{description}</p>
               </div>
             </div>
-            <div className="flex-col">
+            <div className="flex-col ml-auto">
               <DayBlock name="Monday" start={mondayStart} end={mondayEnd} />
               <DayBlock name="Tuesday" start={tuesdayStart} end={tuesdayEnd} />
-              <DayBlock name="Wednesday" start={wednesdayStart} end={wednesdayEnd} />
-              <DayBlock name="Thursday" start={thursdayStart} end={thursdayEnd} />
+              <DayBlock
+                name="Wednesday"
+                start={wednesdayStart}
+                end={wednesdayEnd}
+              />
+              <DayBlock
+                name="Thursday"
+                start={thursdayStart}
+                end={thursdayEnd}
+              />
               <DayBlock name="Friday" start={fridayStart} end={fridayEnd} />
-              <DayBlock name="Saturday" start={saturdayStart} end={saturdayEnd} />
+              <DayBlock
+                name="Saturday"
+                start={saturdayStart}
+                end={saturdayEnd}
+              />
               <DayBlock name="Sunday" start={sundayStart} end={sundayEnd} />
             </div>
           </div>
@@ -127,8 +174,32 @@ const CompanyRegister = () => {
     sundayStart: "",
     sundayEnd: "",
   });
-  const dayArray = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
-  const hours = ["9am", "10am", "11am", "12pm", "1pm", "2pm", "3pm", "4pm", "5pm", "6pm", "7pm", "8pm", "9pm", "10pm", "11pm"];
+  const dayArray = [
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday",
+  ];
+  const hours = [
+    "9am",
+    "10am",
+    "11am",
+    "12pm",
+    "1pm",
+    "2pm",
+    "3pm",
+    "4pm",
+    "5pm",
+    "6pm",
+    "7pm",
+    "8pm",
+    "9pm",
+    "10pm",
+    "11pm",
+  ];
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [successState, setSuccessState] = useState(false);
   const handleChange = (e) => {
@@ -176,12 +247,27 @@ const CompanyRegister = () => {
   // checks if company info are set correctly and moves to next step
   const checkSecondStep = () => {
     for (let day of dayArray) {
-      const start = Number.parseInt(company[`${day}Start`].slice(0, company[`${day}Start`].length - 2));
-      const startTime = company[`${day}Start`].slice(company[`${day}Start`].length - 2, company[`${day}Start`].length);
-      const end = Number.parseInt(company[`${day}End`].slice(0, company[`${day}End`].length - 2));
-      const endTime = company[`${day}End`].slice(company[`${day}End`].length - 2, company[`${day}End`].length);
-      if ((start > end && startTime === endTime) || (startTime === "pm" && endTime === "am")) {
-        toast.error(`${day.toUpperCase()} opening time cannot be past the closing time!`);
+      const start = Number.parseInt(
+        company[`${day}Start`].slice(0, company[`${day}Start`].length - 2)
+      );
+      const startTime = company[`${day}Start`].slice(
+        company[`${day}Start`].length - 2,
+        company[`${day}Start`].length
+      );
+      const end = Number.parseInt(
+        company[`${day}End`].slice(0, company[`${day}End`].length - 2)
+      );
+      const endTime = company[`${day}End`].slice(
+        company[`${day}End`].length - 2,
+        company[`${day}End`].length
+      );
+      if (
+        (start > end && startTime === endTime) ||
+        (startTime === "pm" && endTime === "am")
+      ) {
+        toast.error(
+          `${day.toUpperCase()} opening time cannot be past the closing time!`
+        );
         return;
       }
     }
@@ -196,11 +282,15 @@ const CompanyRegister = () => {
       formData.append(key, company[key]);
     }
     try {
-      const res = await axios.post("http://localhost:5000/api/company/create", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const res = await axios.post(
+        "http://localhost:5000/api/company/create",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       if (res.data.success) {
         setSuccessState(true);
       }
@@ -231,7 +321,10 @@ const CompanyRegister = () => {
             )}
             {activeStep < 2 && (
               <div className="ml-auto">
-                <Button variant="contained" onClick={activeStep === 0 ? checkFirstStep : checkSecondStep}>
+                <Button
+                  variant="contained"
+                  onClick={activeStep === 0 ? checkFirstStep : checkSecondStep}
+                >
                   <div className="mx-3 ">Next</div>
                 </Button>
               </div>
@@ -241,13 +334,42 @@ const CompanyRegister = () => {
             <div className="ml-5 w-3/2">
               {activeStep === 0 && (
                 <>
-                  <InputField onChange={handleChange} name="name" value={company.name} placeholder="Enter Name" type="text" />
-                  <InputField onChange={handleChange} type="email" name="email" placeholder="Email Address" value={company.email} />
-                  <InputField onChange={handleChange} name="number" placeholder="Enter number" value={company.number} type="string" />
+                  <InputField
+                    onChange={handleChange}
+                    name="name"
+                    value={company.name}
+                    placeholder="Enter Name"
+                    type="text"
+                  />
+                  <InputField
+                    onChange={handleChange}
+                    type="email"
+                    name="email"
+                    placeholder="Email Address"
+                    value={company.email}
+                  />
+                  <InputField
+                    onChange={handleChange}
+                    name="number"
+                    placeholder="Enter number"
+                    value={company.number}
+                    type="string"
+                  />
 
-                  <textarea className="my-6 w-full h-36 rounded-md border-skyblue border-2 text-black" onChange={handleChange} name="description" placeholder="Enter description" value={company.description} type="string" />
+                  <textarea
+                    className="my-6 w-full h-36 rounded-md border-skyblue border-2 text-black"
+                    onChange={handleChange}
+                    name="description"
+                    placeholder="Enter description"
+                    value={company.description}
+                    type="string"
+                  />
                   <label htmlFor="file">Upload Home Picture: </label>
-                  <input type="file" onChange={handleImageChange} name="homePic" />
+                  <input
+                    type="file"
+                    onChange={handleImageChange}
+                    name="homePic"
+                  />
                 </>
               )}
               {activeStep === 1 && (
@@ -268,7 +390,10 @@ const CompanyRegister = () => {
                     >
                       {dayArray.map((day) => (
                         <div key={day} className="mb-4 pb-2">
-                          <button className="text-black rounded-md px-3 py-2 mb-1 font-bold w-32 border text-white bg-transparent border-skyblue border-2" id={day}>
+                          <button
+                            className="text-white rounded-md px-3 py-2 mb-1 font-bold w-32 border text-white bg-transparent border-skyblue border-2"
+                            id={day}
+                          >
                             {day}
                           </button>
                         </div>
@@ -295,7 +420,11 @@ const CompanyRegister = () => {
                       {dayArray.map((day) => (
                         <>
                           <div className="flex justify-between w-80 mb-6 pb-2">
-                            <select className="text-black rounded-md px-3 h-10 font-bold" name={`${day}Start`} onChange={handleChange}>
+                            <select
+                              className="text-black rounded-md px-3 h-10 font-bold"
+                              name={`${day}Start`}
+                              onChange={handleChange}
+                            >
                               {hours.map((hour) => (
                                 <option
                                   id={`${hour}`}
@@ -312,7 +441,11 @@ const CompanyRegister = () => {
                                 </option>
                               ))}
                             </select>
-                            <select name={`${day}End`} className="text-black rounded-md px-3 h-10 font-bold" onChange={handleChange}>
+                            <select
+                              name={`${day}End`}
+                              className="text-black rounded-md px-3 h-10 font-bold"
+                              onChange={handleChange}
+                            >
                               {hours.map((hour) => (
                                 <option
                                   id={`${hour}`}
@@ -338,7 +471,12 @@ const CompanyRegister = () => {
               )}
               {activeStep === 2 && (
                 <>
-                  <ReviewInformation {...company} onClick={handleSubmit} disabled={buttonDisabled} success={successState} />
+                  <ReviewInformation
+                    {...company}
+                    onClick={handleSubmit}
+                    disabled={buttonDisabled}
+                    success={successState}
+                  />
                 </>
               )}
             </div>

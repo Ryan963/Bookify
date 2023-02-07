@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Grid, FormControlLabel, Switch } from "@mui/material";
-import ButtonPrimary from "../../components/UI/ButtonPrimary";
 import { toast } from "react-toastify";
 import axios from "axios";
+import DropDown from "../../components/UI/DropDown";
+import { MenuItem } from "../../components/UI/DropDown";
+
 const AdminHome = () => {
   const [companies, setCompanies] = useState(
     []
@@ -26,18 +28,21 @@ const AdminHome = () => {
 
   const handleFilterChange = () => {
     setNotApprovedFilter(!notApprovedFilter);
+
   };
 
-  const approveCompany = async (id) => {
+ const approveCompany = async (id) => {
+  
     try {
       const res = await axios.put("http://localhost:5000/api/admin/approve", {
         companyId: id,
-      });
+     });
       if (res.data.success) {
         setCompanies((prevCompanies) => {
           const companiesCopy = prevCompanies.map((company) => {
             if (company.id === id) {
               company.approved = true;
+              toast.success("Company Approved!")
             }
             return company;
           });
@@ -47,8 +52,28 @@ const AdminHome = () => {
     } catch (error) {
       console.log(error);
       toast.error("Could not approve company");
-    }
+     }
   };
+
+
+
+// if set to show approved companies it should be handled so that the admin can view the companies on that
+const deleteCompany = async (id) => {
+  try {
+    const res = await axios.delete('http://localhost:5000/api/company/delete', {params: {companyId: id}});
+    if (res.data.success) {
+      setCompanies((prevCompanies) => {
+        return prevCompanies.filter(company => company.id !== id);
+      });
+      toast.success("Company Deleted!");
+    }
+  } catch (error) {
+    console.log(error);
+    toast.error("Could not delete company");
+  }
+};
+  
+ 
 
   return (
     <div>
@@ -125,17 +150,24 @@ const AdminHome = () => {
                       <Grid item xs={1}></Grid>
                       <Grid item xs={3}>
                         <div className="mx-8">
-                          <ButtonPrimary
-                            onClick={() => approveCompany(company.id)}
-                          >
-                            Approve
-                          </ButtonPrimary>
+                          <DropDown>
+                         <MenuItem   onClick={() => approveCompany(company.id)}
+                              name="Approve"/>
+                          <MenuItem onClick={() => deleteCompany(company.id)}
+                              name="Decline"/>
+                          <MenuItem onClick={() => CompaniesList()}
+                              name="View"/>
+
+                          </DropDown>
                         </div>
                       </Grid>
                     </Grid>
                   );
+                  
                 })}
+                 
             </div>
+  
           ) : (
             <div className="text-2xl flex justify-center">
               No Companies require approval at the moment
@@ -147,4 +179,8 @@ const AdminHome = () => {
   );
 };
 
+
+
 export default AdminHome;
+
+
