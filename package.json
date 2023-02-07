@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/Ryan963/Bookify#readme",
   "dependencies": {
+    "@headlessui/react": "^1.7.9",
+    "@heroicons/react": "^2.0.14",
     "bcryptjs": "^2.4.3",
     "concurrently": "^7.6.0",
     "cors": "^2.8.5",
