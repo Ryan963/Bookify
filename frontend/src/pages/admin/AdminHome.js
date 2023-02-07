@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Grid, FormControlLabel, Switch } from "@mui/material";
-import ButtonPrimary from "../../components/UI/ButtonPrimary";
 import { toast } from "react-toastify";
 import axios from "axios";
 import DropDown from "../../components/UI/DropDown";
-import { Fragment } from 'react'
-import { Menu, Transition } from '@headlessui/react'
-import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { MenuItem } from "../../components/UI/DropDown";
 
 const AdminHome = () => {
@@ -32,6 +28,7 @@ const AdminHome = () => {
 
   const handleFilterChange = () => {
     setNotApprovedFilter(!notApprovedFilter);
+
   };
 
  const approveCompany = async (id) => {
@@ -45,6 +42,7 @@ const AdminHome = () => {
           const companiesCopy = prevCompanies.map((company) => {
             if (company.id === id) {
               company.approved = true;
+              toast.success("Company Approved!")
             }
             return company;
           });
@@ -56,23 +54,26 @@ const AdminHome = () => {
       toast.error("Could not approve company");
      }
   };
+
+
+
+// if set to show approved companies it should be handled so that the admin can view the companies on that
+const deleteCompany = async (id) => {
+  try {
+    const res = await axios.delete('http://localhost:5000/api/company/delete', {params: {companyId: id}});
+    if (res.data.success) {
+      setCompanies((prevCompanies) => {
+        return prevCompanies.filter(company => company.id !== id);
+      });
+      toast.success("Company Deleted!");
+    }
+  } catch (error) {
+    console.log(error);
+    toast.error("Could not delete company");
+  }
+};
   
-  // function stringify(obj) {
-  //   let cache = [];
-  //   let str = JSON.stringify(obj, function(key, value) {
-  //     if (typeof value === "object" && value !== null) {
-  //       if (cache.indexOf(value) !== -1) {
-  //         // Circular reference found, discard key
-  //         return;
-  //       }
-  //       // Store value in our collection
-  //       cache.push(value);
-  //     }
-  //     return value;
-  //   });
-  //   cache = null; // reset the cache
-  //   return str;
-  // }
+ 
 
   return (
     <div>
@@ -150,12 +151,14 @@ const AdminHome = () => {
                       <Grid item xs={3}>
                         <div className="mx-8">
                           <DropDown>
-                         <MenuItem  onClick={approveCompany} name="Approve"/> 
+                         <MenuItem   onClick={() => approveCompany(company.id)}
+                              name="Approve"/>
+                          <MenuItem onClick={() => deleteCompany(company.id)}
+                              name="Decline"/>
+                          <MenuItem onClick={() => CompaniesList()}
+                              name="View"/>
 
-        
                           </DropDown>
-                          
-                      
                         </div>
                       </Grid>
                     </Grid>
