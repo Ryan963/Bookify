@@ -18,13 +18,13 @@ const loginEmp = async (req, res) => {
     }
     connection.release();
     // check if admin exists and compare passwords.
-    if (employee && employee.role == 0 && (await bcrypt.compare(password, employee.password))) {
+    if (employee && employee.role === 0 && (await bcrypt.compare(password, employee.password))) {
       res.status(200).json({
         success: true,
         employee: employee,
         token: generateToken(employee.id),
       });
-    } else if (employee && employee.role == 1 && (await bcrypt.compare(password, employee.password))) {
+    } else if (employee && employee.role === 1 && (await bcrypt.compare(password, employee.password))) {
       res.status(200).json({
         success: true,
         employee: employee,
