@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import LoginModal from "../../components/Modals/CustomerLoginModal";
 
 const Home = () => {
   return (

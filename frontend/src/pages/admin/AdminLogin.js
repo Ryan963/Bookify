@@ -48,8 +48,8 @@ const AdminLogin = () => {
       });
   };
   return (
-    <div className="flex items-center justify-center w-full min-h-full mt-20">
-      <div className="flex-0 mt-20 pt-5 w pb-5 px-6  justify-center items-center rounded-lg bg-secondary">
+    <div className="flex items-center justify-center w-full mt-32  ">
+      <div className="flex-0 pt-5 w pb-5 px-6 justify-center items-center rounded-lg bg-secondary">
         <form>
           <div className="flex justify-center items-center font-bold text-2xl">
             <span>Admin Login</span>
