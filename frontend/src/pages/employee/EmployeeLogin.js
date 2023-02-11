@@ -30,7 +30,10 @@ const EmployeeLogin = () => {
           // save in localstorage: make sure to save the user type as otherwise can't access protected routes
           localStorage.setItem("email", res.data.employee.email);
           localStorage.setItem("token", res.data.token);
-          localStorage.setItem("type", res.data.employee.role === 1 ? "employeeManager" : "employee");
+          localStorage.setItem(
+            "type",
+            res.data.employee.role === 1 ? "employeeManager" : "employee"
+          );
           setDisabled(false);
           toast.success("Login Successful");
 
@@ -48,8 +51,8 @@ const EmployeeLogin = () => {
       });
   };
   return (
-    <div className="flex items-center justify-center w-full min-h-full mt-20">
-      <div className="flex-0 mt-20 pt-5 w pb-5 px-6  justify-center items-center rounded-lg bg-secondary">
+    <div className="flex items-center justify-center w-full mt-32">
+      <div className="flex-0  pt-5 w pb-5 px-6  justify-center items-center rounded-lg bg-secondary">
         <form>
           <div className="flex justify-center items-center font-bold text-2xl">
             <span>Employee Login</span>
@@ -57,10 +60,26 @@ const EmployeeLogin = () => {
           <hr className="m-0" />
 
           <div className="pr-5 pl-5">
-            <InputField onChange={handleChange} type="email" name="email" placeholder="Email Address" value={userInfo.email} />
-            <InputField onChange={handleChange} type={"password"} name="password" placeholder="Password" value={userInfo.password} />
+            <InputField
+              onChange={handleChange}
+              type="email"
+              name="email"
+              placeholder="Email Address"
+              value={userInfo.email}
+            />
+            <InputField
+              onChange={handleChange}
+              type={"password"}
+              name="password"
+              placeholder="Password"
+              value={userInfo.password}
+            />
             <section className={` mb-4 mt-9 flex justify-center`}>
-              <ButtonPrimary type="submit" disabled={disabled} onClick={handleSubmit}>
+              <ButtonPrimary
+                type="submit"
+                disabled={disabled}
+                onClick={handleSubmit}
+              >
                 Login
               </ButtonPrimary>
             </section>

@@ -28,21 +28,19 @@ const AdminHome = () => {
 
   const handleFilterChange = () => {
     setNotApprovedFilter(!notApprovedFilter);
-
   };
 
- const approveCompany = async (id) => {
-  
+  const approveCompany = async (id) => {
     try {
       const res = await axios.put("http://localhost:5000/api/admin/approve", {
         companyId: id,
-     });
+      });
       if (res.data.success) {
         setCompanies((prevCompanies) => {
           const companiesCopy = prevCompanies.map((company) => {
             if (company.id === id) {
               company.approved = true;
-              toast.success("Company Approved!")
+              toast.success("Company Approved!");
             }
             return company;
           });
@@ -52,28 +50,27 @@ const AdminHome = () => {
     } catch (error) {
       console.log(error);
       toast.error("Could not approve company");
-     }
+    }
   };
 
-
-
-// if set to show approved companies it should be handled so that the admin can view the companies on that
-const deleteCompany = async (id) => {
-  try {
-    const res = await axios.delete('http://localhost:5000/api/company/delete', {params: {companyId: id}});
-    if (res.data.success) {
-      setCompanies((prevCompanies) => {
-        return prevCompanies.filter(company => company.id !== id);
-      });
-      toast.success("Company Deleted!");
+  // if set to show approved companies it should be handled so that the admin can view the companies on that
+  const deleteCompany = async (id) => {
+    try {
+      const res = await axios.delete(
+        "http://localhost:5000/api/company/delete",
+        { params: { companyId: id } }
+      );
+      if (res.data.success) {
+        setCompanies((prevCompanies) => {
+          return prevCompanies.filter((company) => company.id !== id);
+        });
+        toast.success("Company Deleted!");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Could not delete company");
     }
-  } catch (error) {
-    console.log(error);
-    toast.error("Could not delete company");
-  }
-};
-  
- 
+  };
 
   return (
     <div>
@@ -151,23 +148,21 @@ const deleteCompany = async (id) => {
                       <Grid item xs={3}>
                         <div className="mx-8">
                           <DropDown>
-                         <MenuItem   onClick={() => approveCompany(company.id)}
-                              name="Approve"/>
-                          <MenuItem onClick={() => deleteCompany(company.id)}
-                              name="Decline"/>
-                          <MenuItem onClick={() => CompaniesList()}
-                              name="View"/>
-
+                            <MenuItem
+                              onClick={() => approveCompany(company.id)}
+                              name="Approve"
+                            />
+                            <MenuItem
+                              onClick={() => deleteCompany(company.id)}
+                              name="Decline"
+                            />
                           </DropDown>
                         </div>
                       </Grid>
                     </Grid>
                   );
-                  
                 })}
-                 
             </div>
-  
           ) : (
             <div className="text-2xl flex justify-center">
               No Companies require approval at the moment
@@ -179,8 +174,4 @@ const deleteCompany = async (id) => {
   );
 };
 
-
-
 export default AdminHome;
-
-

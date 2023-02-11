@@ -17,6 +17,7 @@ const loginCustomer = async (req, res) => {
       customer = customer[0];
     } else {
       res.status(400).json({ message: "Invalid credentials" });
+      return;
     }
     connection.release();
     // check if customer exists nad compare passwords
@@ -28,6 +29,7 @@ const loginCustomer = async (req, res) => {
       });
     } else {
       res.status(400).json({ message: "Invalid credentials" });
+      return;
     }
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -61,15 +63,11 @@ const registerCustomer = async (req, res) => {
       customer
     );
 
-    if (registeredCustomer.insertId > 0) {
-      res.status(200).json({
-        success: true,
-        message: "customer registered",
-        token: generateToken(customer.id),
-      });
-    } else {
-      res.status(200).json({ success: false, message: "Invalid data" });
-    }
+    res.status(200).json({
+      success: true,
+      message: "customer registered",
+      token: generateToken(customer.id),
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: "server error" });
   }
