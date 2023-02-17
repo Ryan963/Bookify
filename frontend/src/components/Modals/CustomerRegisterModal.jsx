@@ -20,8 +20,7 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
     width: "30%",
-    height: "80%",
-    minHeight: "550px",
+    height: "fit-content",
     marginTop: "50px",
   },
   form: {

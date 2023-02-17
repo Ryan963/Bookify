@@ -28,7 +28,7 @@ const SideBar = ({ isOpen, setIsOpen }) => {
       collapsedWidth="0"
       className={`${
         isOpen ? "block" : "hidden"
-      } absolute top-0 left-0 h-screen w-64 bg-dark z-10 h-screen`}
+      } absolute top-0 left-0  w-64 bg-dark z-10 h-screen`}
     >
       <Menu>
         <MenuItem className="hover:text-black"> Pie charts </MenuItem>

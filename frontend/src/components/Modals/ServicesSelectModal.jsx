@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
   },
   paper: {
-    backgroundColor: "#2b2d2e",
+    backgroundColor: "white",
     border: "2px solid white",
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const LoginModal = ({ open, setOpen, switchToRegister }) => {
+const ServicesSelectModal = ({ open, setOpen }) => {
   const classes = useStyles();
   const [userInfo, setUserInfo] = useState({ email: "", password: "" });
   const [disabled, setDisabled] = useState(false);
@@ -92,39 +92,17 @@ const LoginModal = ({ open, setOpen, switchToRegister }) => {
       <Fade in={open}>
         <div className={classes.paper}>
           <div className="flex justify-center items-center font-bold text-2xl">
-            <span>Login</span>
+            <span>Choose up to 5 services that interests you</span>
           </div>
           <form className={classes.form} noValidate>
             <InputField
-              name="email"
-              placeholder="Email"
-              type="email"
+              name="filter"
+              placeholder="Filter Services"
+              type="text"
               value={userInfo.email}
               onChange={handleChange}
               className={classes.textField}
             />
-            <InputField
-              name="password"
-              placeholder="Password"
-              type="password"
-              value={userInfo.password}
-              onChange={handleChange}
-              className={classes.textField}
-            />
-            <div className="mt-6">
-              Don't Have an Account?{" "}
-              <span
-                className="underline cursor-pointer text-lightblue"
-                onClick={switchToRegister}
-              >
-                Register Here
-              </span>
-            </div>
-            <div className="w-full flex justify-end mt-16">
-              <ButtonSecondary disabled={disabled} onClick={handleLogin}>
-                Login
-              </ButtonSecondary>
-            </div>
           </form>
         </div>
       </Fade>
@@ -132,4 +110,4 @@ const LoginModal = ({ open, setOpen, switchToRegister }) => {
   );
 };
 
-export default LoginModal;
+export default ServicesSelectModal;
