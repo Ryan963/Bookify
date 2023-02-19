@@ -37,8 +37,9 @@ app.use("/api/employee", require("./routes/employeeRoutes"));
 app.use("/api/customer", require("./routes/customerRoutes"));
 app.use("/api/company", require("./routes/companyRoutes"));
 app.use("/api/service", require("./routes/serviceRoutes"));
-
 app.use("/api/companyService", require("./routes/companyServiceRoute"));
+app.use("/api/branch", require("./routes/branchRoutes"));
+app.use("/api/search", require("./routes/searchRoutes"));
 app.use(cors());
 
 app.listen(5000, () => {

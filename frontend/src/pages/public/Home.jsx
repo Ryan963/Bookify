@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import InputField from "../../components/UI/InputField";
 import capstonebackground from "../../utils/images/capstonebackground.jpg";
 import Typewriter from "typewriter-effect";
 import useServices from "../../hooks/useServices";
-import ServicesSelectModal from "../../components/Modals/ServicesSelectModal";
-
+import ButtonPrimary from "../../components/UI/ButtonPrimary";
+import SearchItemDisplay from "../../components/Home/SearchItemDisplay";
+import TitleText from "../../components/UI/TitleText";
+import axios from "axios";
 const ServiceSuggestions = ({ search, setSearch }) => {
   const servicesArray = [
     "Barbers",
@@ -38,7 +40,114 @@ const ServiceSuggestions = ({ search, setSearch }) => {
 const Home = () => {
   const [search, setSearch] = useState("");
   const [services, setServices] = useServices();
-  console.log(services);
+  const [recommended, setRecommended] = useState("");
+  const tempBranches = [
+    {
+      companyName: "360 Barber",
+      address: "543 Sherwood Park NW",
+      services: [
+        {
+          name: "Haircut",
+          description: "a deep fade with a haircut with any styles possible",
+          length: "01:00:00",
+        },
+        {
+          name: "Beard Trim",
+          description: "a skin fade on the Beard with any styles possible",
+          length: "01:00:00",
+        },
+        {
+          name: "Wax",
+          description: "we can wax any part of your body",
+          length: "01:00:00",
+        },
+        {
+          name: "Haircut",
+          description: "a deep fade with a haircut with any styles possible",
+          length: "01:00:00",
+        },
+      ],
+    },
+    {
+      companyName: "360 Barber",
+      address: "543 Sherwood Park NW",
+      services: [
+        {
+          name: "Haircut",
+          description: "a deep fade with a haircut with any styles possible",
+          length: "01:00:00",
+        },
+        {
+          name: "Beard Trim",
+          description: "a skin fade on the Beard with any styles possible",
+          length: "01:00:00",
+        },
+        {
+          name: "Wax",
+          description: "we can wax any part of your body",
+          length: "01:00:00",
+        },
+        {
+          name: "Haircut",
+          description: "a deep fade with a haircut with any styles possible",
+          length: "01:00:00",
+        },
+      ],
+    },
+    {
+      companyName: "360 Barber",
+      address: "543 Sherwood Park NW",
+      services: [
+        {
+          name: "Haircut",
+          description: "a deep fade with a haircut with any styles possible",
+          length: "01:00:00",
+        },
+        {
+          name: "Beard Trim",
+          description: "a skin fade on the Beard with any styles possible",
+          length: "01:00:00",
+        },
+        {
+          name: "Wax",
+          description: "we can wax any part of your body",
+          length: "01:00:00",
+        },
+      ],
+    },
+    {
+      companyName: "360 Barber",
+      address: "543 Sherwood Park NW",
+      services: [
+        {
+          name: "Haircut",
+          description: "a deep fade with a haircut with any styles possible",
+          length: "01:00:00",
+        },
+        {
+          name: "Beard Trim",
+          description: "a skin fade on the Beard with any styles possible",
+          length: "01:00:00",
+        },
+        {
+          name: "Wax",
+          description: "we can wax any part of your body",
+          length: "01:00:00",
+        },
+      ],
+    },
+  ];
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await axios.get(
+          `${process.env.REACT_APP_SERVER_URL}/search/recommend`
+        );
+        console.log(res.data);
+      } catch (error) {}
+    })();
+  }, []);
   return (
     <>
       <div
@@ -82,6 +191,12 @@ const Home = () => {
         <div className="absolute bottom-6 h-10 bg-secondary w-full bg-opacity-60 flex justify-center items-center">
           <ServiceSuggestions search={search} setSearch={setSearch} />
         </div>
+      </div>
+      <div className="flex flex-col justify-around mt-[40%] ">
+        <div className="my-2">
+          <TitleText>Top Services in Your Area</TitleText>
+        </div>
+        <SearchItemDisplay branches={tempBranches} />
       </div>
     </>
   );
