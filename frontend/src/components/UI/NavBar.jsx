@@ -5,20 +5,38 @@ import {
   FaUserCircle,
   FaBars,
 } from "react-icons/fa";
-import React, { useState } from "react";
-import { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import SideBar from "./SideBar";
 import LoginModal from "../Modals/CustomerLoginModal";
 import RegisterModal from "../Modals/CustomerRegisterModal";
-
+import { useLocation } from "react-router-dom";
 const Navbar = ({ isOpen, setIsOpen }) => {
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [registerModalOpen, setRegisterModalOpen] = useState(false);
+  const [scrollPercentage, setScrollPercentage] = useState(0);
 
+  const location = useLocation();
+  const pathname = location.pathname;
   const navigate = useNavigate();
   const user = localStorage.getItem("email");
   const type = localStorage.getItem("type");
   const userUrl = `/${type}/home/`;
+
+  useEffect(() => {
+    function handleScroll() {
+      setScrollPercentage(
+        window.pageYOffset / (document.body.offsetHeight - window.innerHeight)
+      );
+    }
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+  console.log(scrollPercentage);
+
   // logs out the user not matter what type he is
   const logout = () => {
     localStorage.clear();
@@ -43,7 +61,14 @@ const Navbar = ({ isOpen, setIsOpen }) => {
   }
   return (
     <>
-      <nav className="flex items-center justify-between p-6  sticky top-0 bg-secondary">
+      <nav
+        className={`flex items-center justify-between p-6 w-full  fixed top-0 ${
+          pathname === "/" && scrollPercentage > -0.7
+            ? "bg-transparent"
+            : "bg-secondary"
+        }`}
+        style={{ zIndex: 1000 }}
+      >
         <div className="flex items-center">
           <FaBars
             onClick={() => {
