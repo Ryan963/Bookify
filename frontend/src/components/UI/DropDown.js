@@ -30,11 +30,12 @@ export const MenuItem =  ({name, onClick}) => { //imports into as other componen
 
 } // anon function saving it in a variable 
 
+
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function DropDown({children}) { // pass prop through here all the menu items should be passed as the children of the menu item 
+export default function DropDown({children}) { 
   return (
     <Menu as="div" className="relative inline-block text-left"> 
       <div>
@@ -43,6 +44,7 @@ export default function DropDown({children}) { // pass prop through here all the
           Options
           <ChevronDownIcon className="-mr-1 ml-2 h-5 w-5" aria-hidden="true" />
         </Menu.Button>
+
       </div>
 
 

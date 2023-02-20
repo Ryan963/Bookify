@@ -61,7 +61,7 @@ const InfoBlock = ({ name, value }) => {
     </div>
   );
 };
-const ReviewInformation = ({
+export const ReviewInformation = ({
   name,
   email,
   number,
@@ -107,8 +107,8 @@ const ReviewInformation = ({
         </div>
       ) : (
         <>
-          <h2 className="text-xl font-medium mb-5 text-center">
-            Review Your Information
+          <h2 className="text-xl font-medium mb-5 text-center underline">
+            Review Information
           </h2>
           <div className="flex justify-betweem ">
             <div>
@@ -488,3 +488,5 @@ const CompanyRegister = () => {
 };
 
 export default CompanyRegister;
+
+
