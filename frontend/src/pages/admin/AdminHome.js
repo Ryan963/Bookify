@@ -4,12 +4,15 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import DropDown from "../../components/UI/DropDown";
 import { MenuItem } from "../../components/UI/DropDown";
+import ViewCompanyModal from "../../components/UI/ViewCompanyModal";
 
 const AdminHome = () => {
   const [companies, setCompanies] = useState(
     []
   ); /* updates the array . state derives the whole application */
   const [notApprovedFilter, setNotApprovedFilter] = useState(true);
+    const [open, setOpen] = useState(false);
+  const [selectedCompany, setSelectedCompany] = useState(null);
 
   useEffect(() => {
     getCompanies();
@@ -30,6 +33,8 @@ const AdminHome = () => {
     setNotApprovedFilter(!notApprovedFilter);
 
   };
+
+  
 
  const approveCompany = async (id) => {
   
@@ -128,6 +133,7 @@ const deleteCompany = async (id) => {
                 })
                 .map((company, index) => {
                   return (
+                    <>
                     <Grid
                       key={index}
                       container
@@ -148,20 +154,30 @@ const deleteCompany = async (id) => {
                         <div>{company.email}</div>
                       </Grid>
                       <Grid item xs={1}></Grid>
+
                       <Grid item xs={3}>
                         <div className="mx-8">
+                          
                           <DropDown>
-                         <MenuItem   onClick={() => approveCompany(company.id)}
-                              name="Approve"/>
-                          <MenuItem onClick={() => deleteCompany(company.id)}
-                              name="Decline"/>
-                          <MenuItem onClick={() => CompaniesList()}
-                              name="View"/>
+                        {notApprovedFilter && (
+                          <>
+                           <MenuItem   onClick={() => approveCompany(company.id)}
+                           name="Approve"/>
+                       <MenuItem onClick={() => deleteCompany(company.id)}
+                           name="Decline"/>
+                          </>
+                        )}
+                          <MenuItem onClick={() =>{
+                            setSelectedCompany(company)
+                             setOpen(true)}}
+                            name="View Info"/>
 
                           </DropDown>
                         </div>
                       </Grid>
                     </Grid>
+     
+                    </>
                   );
                   
                 })}
@@ -175,6 +191,7 @@ const deleteCompany = async (id) => {
           )}
         </div>
       </div>
+      <ViewCompanyModal open={open} onClose={() => setOpen(false)} company={selectedCompany} />
     </div>
   );
 };
