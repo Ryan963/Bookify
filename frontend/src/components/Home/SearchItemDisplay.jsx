@@ -1,12 +1,19 @@
 import React from "react";
 import ButtonPrimary from "../UI/ButtonPrimary";
 const SearchItemDisplay = ({ branches }) => {
+  console.log(branches);
   return (
     <>
       {branches.map((branch) => (
         <div className="bg-[#262729] h-[350px]  justify-center items-center mx-20 my-6 ">
           <div className="flex items-center h-full ml-6">
-            <img src={branch.homePic} width={400} height={400} />
+            {branch.homePic && (
+              <img
+                src={`http://localhost:5000/${branch.homePic}`}
+                width={400}
+                height={400}
+              />
+            )}
             <div className="ml-10 flex-1 mr-6">
               <h3 className="text-4xl font-bold ">{branch.companyName}</h3>
               <h3 className="text-xl font-semibold ">{branch.address}</h3>

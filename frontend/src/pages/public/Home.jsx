@@ -8,6 +8,7 @@ import ButtonPrimary from "../../components/UI/ButtonPrimary";
 import SearchItemDisplay from "../../components/Home/SearchItemDisplay";
 import TitleText from "../../components/UI/TitleText";
 import axios from "axios";
+import { toast } from "react-toastify";
 const ServiceSuggestions = ({ search, setSearch }) => {
   const servicesArray = [
     "Barbers",
@@ -40,7 +41,7 @@ const ServiceSuggestions = ({ search, setSearch }) => {
 const Home = () => {
   const [search, setSearch] = useState("");
   const [services, setServices] = useServices();
-  const [recommended, setRecommended] = useState("");
+  const [recommended, setRecommended] = useState([]);
   const tempBranches = [
     {
       companyName: "360 Barber",
@@ -144,8 +145,11 @@ const Home = () => {
         const res = await axios.get(
           `${process.env.REACT_APP_SERVER_URL}/search/recommend`
         );
-        console.log(res.data);
-      } catch (error) {}
+        setRecommended(res.data.branches);
+      } catch (error) {
+        console.log(error);
+        toast.error("Server Error");
+      }
     })();
   }, []);
   return (
@@ -196,7 +200,7 @@ const Home = () => {
         <div className="my-2">
           <TitleText>Top Services in Your Area</TitleText>
         </div>
-        <SearchItemDisplay branches={tempBranches} />
+        <SearchItemDisplay branches={recommended} />
       </div>
     </>
   );

@@ -14,6 +14,9 @@ import "react-toastify/dist/ReactToastify.css";
 import NavBar from "./components/UI/NavBar";
 import { ProSidebarProvider } from "react-pro-sidebar";
 import SideBar from "./components/UI/SideBar";
+import Branches from "./pages/employee/Branches";
+import Employees from "./pages/employee/Employees";
+import Services from "./pages/employee/Services";
 function App() {
   const [isOpen, setIsOpen] = useState(false);
   const width = window.innerWidth;
@@ -34,21 +37,29 @@ function App() {
               } h-screen absolute top-0 `}
             >
               <NavBar open={isOpen} setIsOpen={setIsOpen} />
-
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/admin/login" element={<AdminLogin />} />
-                <Route path="/employee/login" element={<EmployeeLogin />} />
-                <Route path="/company/register" element={<CompanyRegister />} />
-                {/* all customer routes goes in here */}
-                <Route element={<PrivateCustomerRoute />}></Route>
-                {/* all employee routes goes in here */}
-                <Route element={<PrivateEmployeeRoute />}></Route>
-                {/* all admin routes goes in here */}
-                <Route element={<PrivateAdminRoute />}>
-                  <Route path="/admin/home" element={<AdminHome />} />
-                </Route>
-              </Routes>
+              <div className="mt-24">
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/admin/login" element={<AdminLogin />} />
+                  <Route path="/employee/login" element={<EmployeeLogin />} />
+                  <Route
+                    path="/company/register"
+                    element={<CompanyRegister />}
+                  />
+                  {/* all customer routes goes in here */}
+                  <Route element={<PrivateCustomerRoute />}></Route>
+                  {/* all employee routes goes in here */}
+                  <Route element={<PrivateEmployeeRoute />}>
+                    <Route path="/employees" element={<Employees />} />
+                    <Route path="/branches" element={<Branches />} />
+                    <Route path="/services" element={<Services />} />
+                  </Route>
+                  {/* all admin routes goes in here */}
+                  <Route element={<PrivateAdminRoute />}>
+                    <Route path="/admin/home" element={<AdminHome />} />
+                  </Route>
+                </Routes>
+              </div>
             </div>
           </div>
         </ProSidebarProvider>

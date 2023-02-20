@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
@@ -34,36 +34,40 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const RegisterModal = ({ open, setOpen, switchToLogin }) => {
+const AddBranchModal = ({ open, setOpen, employee, setBranches }) => {
   const classes = useStyles();
-  const [userInfo, setUserInfo] = useState({
-    firstname: "",
-    lastname: "",
+  const [branchInfo, setBranchInfo] = useState({
+    city: "",
+    province: "",
     number: "",
-    email: "",
-    password: "",
+    country: "",
+    current: true,
     address: "",
     longitude: "",
     latitude: "",
     postalCode: "",
+    companyId: null,
   });
   const [disabled, setDisabled] = useState(false);
 
-  const handleOpen = () => {
-    setOpen(true);
-  };
+  useEffect(() => {
+    setBranchInfo({ ...branchInfo, companyId: employee.companyId });
+  }, [employee]);
 
   const handleChange = (e) => {
-    setUserInfo({ ...userInfo, [e.target.name]: e.target.value });
+    setBranchInfo({ ...branchInfo, [e.target.name]: e.target.value });
   };
 
   const handleClose = () => {
     setOpen(false);
   };
-  const handleRegister = async () => {
+  const handleAddingBranch = async () => {
     setDisabled(true);
-    for (let info in userInfo) {
-      if (userInfo[info] === null || userInfo[info].length === 0) {
+    for (let info in branchInfo) {
+      if (
+        branchInfo[info] === null ||
+        (typeof branchInfo[info] == String && branchInfo[info].length === 0)
+      ) {
         toast.error("Please fill all required Fields");
         setDisabled(false);
         return;
@@ -71,22 +75,23 @@ const RegisterModal = ({ open, setOpen, switchToLogin }) => {
     }
     try {
       const res = await axios.post(
-        `${process.env.REACT_APP_SERVER_URL}/customer/`,
+        `${process.env.REACT_APP_SERVER_URL}/branch/`,
         {
-          customer: { ...userInfo },
+          branch: { ...branchInfo },
         }
       );
       if (res.data.success) {
-        // save in localstorage: make sure to save the user type as otherwise can't access protected routes
-        localStorage.setItem("email", userInfo.email);
-        localStorage.setItem("token", res.data.token);
-        localStorage.setItem("type", "customer");
+        console.log(res.data);
+        // setBranches((prevBranches) => {
+        //   return [...prevBranches, { ...branchInfo, id: res.data.id }];
+        // });
+        setOpen(false);
 
-        toast.success("Login Successful");
+        toast.success("Branch Registered");
         handleClose();
       } else {
         console.log(res.data.message);
-        toast.error("User Unauthorized");
+        toast.error("Please check the Branch Info");
       }
       setDisabled(false);
     } catch (error) {
@@ -111,69 +116,53 @@ const RegisterModal = ({ open, setOpen, switchToLogin }) => {
       <Fade in={open}>
         <div className={classes.paper}>
           <div className="flex justify-center items-center font-bold text-2xl">
-            <span>Register</span>
+            <span>Add a New Branch</span>
           </div>
           <form className={classes.form} noValidate>
+            <PlacesAutocompleteInput
+              address={branchInfo.address}
+              setAddress={(address) =>
+                setBranchInfo({ ...branchInfo, address: address })
+              }
+              setInfo={setBranchInfo}
+            />
             <InputField
-              name="firstname"
-              placeholder="First Name"
+              name="country"
+              placeholder="Country"
               type="text"
-              value={userInfo.firstname}
+              value={branchInfo.country}
               onChange={handleChange}
               className={classes.textField}
             />
             <InputField
-              name="lastname"
-              placeholder="Last name"
+              name="province"
+              placeholder="Province"
               type="text"
-              value={userInfo.lastname}
+              value={branchInfo.province}
               onChange={handleChange}
               className={classes.textField}
             />
+            <InputField
+              name="city"
+              placeholder="City"
+              type="text"
+              value={branchInfo.city}
+              onChange={handleChange}
+              className={classes.textField}
+            />
+
             <InputField
               name="number"
               placeholder="Number"
               type="text"
-              value={userInfo.number}
+              value={branchInfo.number}
               onChange={handleChange}
               className={classes.textField}
             />
-            <InputField
-              name="email"
-              placeholder="Email"
-              type="email"
-              value={userInfo.email}
-              onChange={handleChange}
-              className={classes.textField}
-            />
-            {/* here goes addess ad postal code */}
-            <InputField
-              name="password"
-              placeholder="Password"
-              type="password"
-              value={userInfo.password}
-              onChange={handleChange}
-              className={classes.textField}
-            />
-            <PlacesAutocompleteInput
-              address={userInfo.address}
-              setAddress={(address) =>
-                setUserInfo({ ...userInfo, address: address })
-              }
-              setInfo={setUserInfo}
-            />
-            <div className="mt-4">
-              Have an account already?{" "}
-              <span
-                className="underline cursor-pointer text-lightblue"
-                onClick={switchToLogin}
-              >
-                Login Here
-              </span>
-            </div>
+
             <div className="w-full flex justify-end mt-8">
-              <ButtonSecondary disabled={disabled} onClick={handleRegister}>
-                Register
+              <ButtonSecondary disabled={disabled} onClick={handleAddingBranch}>
+                Add Branch
               </ButtonSecondary>
             </div>
           </form>
@@ -183,4 +172,4 @@ const RegisterModal = ({ open, setOpen, switchToLogin }) => {
   );
 };
 
-export default RegisterModal;
+export default AddBranchModal;

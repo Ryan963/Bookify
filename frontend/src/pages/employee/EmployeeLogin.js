@@ -37,7 +37,7 @@ const EmployeeLogin = () => {
           setDisabled(false);
           toast.success("Login Successful");
 
-          // change the route to the admin page
+          // change the route to the employee page
           navigate("/employee/home");
         } else {
           console.log(res.data.message);
