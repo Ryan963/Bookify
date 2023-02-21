@@ -183,7 +183,7 @@ const Branches = () => {
         {branches.length > 0 ? (
           <DataGrid checkboxSelection rows={branches} columns={columns} />
         ) : (
-          <div>No Branches to show yet</div>
+          <div>No Branches to show</div>
         )}
       </Box>
       <AddBranchModal

@@ -5,7 +5,7 @@ const SearchItemDisplay = ({ branches }) => {
   return (
     <>
       {branches.map((branch) => (
-        <div className="bg-[#262729] h-[350px]  justify-center items-center mx-20 my-6 ">
+        <div className="bg-[#131d30] h-[350px]  justify-center items-center mx-20 my-6 ">
           <div className="flex items-center h-full ml-6">
             {branch.homePic && (
               <img
@@ -15,7 +15,9 @@ const SearchItemDisplay = ({ branches }) => {
               />
             )}
             <div className="ml-10 flex-1 mr-6">
-              <h3 className="text-4xl font-bold ">{branch.companyName}</h3>
+              <h3 className="text-4xl font-bold text-orange-600">
+                {branch.companyName}
+              </h3>
               <h3 className="text-xl font-semibold ">{branch.address}</h3>
               {branch.services.slice(0, 3).map((service) => (
                 <div key={service.name}>
