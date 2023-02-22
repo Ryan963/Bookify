@@ -35,7 +35,6 @@ const Navbar = ({ isOpen, setIsOpen }) => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-  console.log(scrollPercentage);
 
   // logs out the user not matter what type he is
   const logout = () => {
@@ -73,7 +72,6 @@ const Navbar = ({ isOpen, setIsOpen }) => {
           <FaBars
             onClick={() => {
               setIsOpen((prevOpen) => {
-                console.log(prevOpen);
                 return !prevOpen;
               });
             }}

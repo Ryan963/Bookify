@@ -1,5 +1,5 @@
 const db = require("../config/db");
-
+const fs = require("fs");
 const getTopCompanies = async (req, res) => {
   try {
     const connection = await db.awaitGetConnection();
@@ -15,8 +15,16 @@ const getTopCompanies = async (req, res) => {
       "SELECT id, name, number, email, homePic, description from Company";
 
     let results = await connection.awaitQuery(query);
+
     for (let i = 0; i < results.length; i++) {
-      const servicesQuery = "SELECT * FROM CompanyService WHERE companyId = ?;";
+      if (results[i].homePic) {
+        // convert the binary data to a base64-encoded string
+        const base64Image = results[i].homePic.toString();
+        results[i].homePic = base64Image;
+      }
+
+      const servicesQuery =
+        "SELECT CS.id AS id, CS.price AS price, CS.length AS length, S.name AS name, S.description AS description FROM CompanyService CS JOIN Service S ON S.id = CS.serviceId WHERE companyId = ?;";
       const services = await connection.awaitQuery(servicesQuery, [
         results[i].id,
       ]);
@@ -26,8 +34,7 @@ const getTopCompanies = async (req, res) => {
         address: "532 Sherwood Park NW",
       };
     }
-
-    console.log(results);
+    connection.release();
     res.status(200).json({ success: true, branches: results });
   } catch (error) {
     console.log(error);
