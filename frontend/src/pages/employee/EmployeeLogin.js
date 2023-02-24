@@ -30,14 +30,11 @@ const EmployeeLogin = () => {
           // save in localstorage: make sure to save the user type as otherwise can't access protected routes
           localStorage.setItem("email", res.data.employee.email);
           localStorage.setItem("token", res.data.token);
-          localStorage.setItem(
-            "type",
-            res.data.employee.role === 1 ? "employeeManager" : "employee"
-          );
+          localStorage.setItem("type", res.data.employee.role === 1 ? "employeeManager" : "employee");
           setDisabled(false);
           toast.success("Login Successful");
 
-          // change the route to the employee page
+          // change the route to the admin page
           navigate("/employee/home");
         } else {
           console.log(res.data.message);
@@ -60,26 +57,10 @@ const EmployeeLogin = () => {
           <hr className="m-0" />
 
           <div className="pr-5 pl-5">
-            <InputField
-              onChange={handleChange}
-              type="email"
-              name="email"
-              placeholder="Email Address"
-              value={userInfo.email}
-            />
-            <InputField
-              onChange={handleChange}
-              type={"password"}
-              name="password"
-              placeholder="Password"
-              value={userInfo.password}
-            />
+            <InputField onChange={handleChange} type="email" name="email" placeholder="Email Address" value={userInfo.email} />
+            <InputField onChange={handleChange} type={"password"} name="password" placeholder="Password" value={userInfo.password} />
             <section className={` mb-4 mt-9 flex justify-center`}>
-              <ButtonPrimary
-                type="submit"
-                disabled={disabled}
-                onClick={handleSubmit}
-              >
+              <ButtonPrimary type="submit" disabled={disabled} onClick={handleSubmit}>
                 Login
               </ButtonPrimary>
             </section>
