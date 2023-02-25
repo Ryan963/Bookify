@@ -306,9 +306,11 @@ class CalenderView extends React.Component {
     console.log("Component did mount"); //suggests where react makes the api call
     axios.get(`${process.env.REACT_APP_SERVER_URL}/calendar/`).then((response) => {
       const initalData = response.data.data;
-      console.log(initalData);
+      //console.log(initalData);
       const finalData = [];
-
+      for (let i = 0; i < initalData.length; i++) {
+        console.log(initalData[i]);
+      }
       /* Take this array and manipulate it so that
 
         label: "New Year's Eve",
