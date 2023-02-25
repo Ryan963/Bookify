@@ -49,7 +49,6 @@ function App() {
                   <Route element={<PrivateCustomerRoute />}></Route>
                   {/* all employee routes goes in here */}
                   <Route element={<PrivateEmployeeRoute />}>
-                    <Route path="/employee/calender" element={<CalenderView />} />
                     <Route path="/employees" element={<Employees />} />
                     <Route path="/branches" element={<Branches />} />
                     <Route path="/services" element={<Services />} />

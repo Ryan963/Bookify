@@ -3,8 +3,8 @@ import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { makeStyles } from "@material-ui/core/styles";
-import { Paper } from "@material-ui/core";
 import { useState } from "react";
+import axios from "axios";
 
 const localizer = momentLocalizer(moment);
 
@@ -59,22 +59,15 @@ function AppointmentCalendar() {
     // to match the data above
     // to set the booking data do this setBookingData(Your Final Data Goes here)
     console.log("hello");
+    axios.get(`${process.env.REACT_APP_SERVER_URL}/calendar/`).then((response) => {
+      const initalData = response.data.data;
+      console.log(initalData);
+    });
   }, []);
 
   return (
     <div>
-      <Calendar
-        localizer={localizer}
-        events={events}
-        startAccessor="start"
-        endAccessor="end"
-        views={["month", "week"]}
-        step={30}
-        defaultView="month"
-        className={classes.calendar}
-        popup={true}
-        selectable
-      />
+      <Calendar localizer={localizer} events={events} startAccessor="start" endAccessor="end" views={["month", "week"]} step={30} defaultView="month" className={classes.calendar} popup={true} selectable />
     </div>
   );
 }
