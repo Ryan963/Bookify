@@ -17,6 +17,7 @@ import SideBar from "./components/UI/SideBar";
 import Branches from "./pages/employee/Branches";
 import Employees from "./pages/employee/Employees";
 import Services from "./pages/employee/Services";
+import Search from "./pages/public/Search";
 function App() {
   const [isOpen, setIsOpen] = useState(false);
   const width = window.innerWidth;
@@ -40,6 +41,7 @@ function App() {
               <div className="mt-24">
                 <Routes>
                   <Route path="/" element={<Home />} />
+                  <Route path="/search" element={<Search />} />
                   <Route path="/admin/login" element={<AdminLogin />} />
                   <Route path="/employee/login" element={<EmployeeLogin />} />
                   <Route

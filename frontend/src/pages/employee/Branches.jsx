@@ -120,16 +120,15 @@ const Branches = () => {
       field: "current",
       headerName: "Current",
       headerAlign: "center",
-      flex: 1,
       renderCell: ({ row: { current } }) => {
         return (
           <Box
-            width="60%"
+            width="50%"
             m="0 auto"
             p="5px"
             display="flex"
             justifyContent="center"
-            backgroundColor={current === true ? "#3da58a" : "#0c101b"}
+            backgroundColor={current ? "#3da58a" : "#0c101b"}
             borderRadius="4px"
           >
             <Typography color={"#e0e0e0"} sx={{ ml: "5px" }}>
@@ -146,7 +145,7 @@ const Branches = () => {
       <TitleText>Branches</TitleText>
       <div className="absolute top-24">
         <ButtonPrimary onClick={() => setOpenAddBranchModal(true)}>
-          Add a New Branch
+          New Branch
         </ButtonPrimary>
       </div>
       <Box

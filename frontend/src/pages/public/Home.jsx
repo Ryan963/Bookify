@@ -9,6 +9,8 @@ import SearchItemDisplay from "../../components/Home/SearchItemDisplay";
 import TitleText from "../../components/UI/TitleText";
 import axios from "axios";
 import { toast } from "react-toastify";
+import AutocompleteModal from "../../components/Modals/SearchModal";
+import SearchInputBox from "../../components/Home/SearchInputBox";
 const ServiceSuggestions = ({ search, setSearch }) => {
   const servicesArray = [
     "Barbers",
@@ -39,105 +41,9 @@ const ServiceSuggestions = ({ search, setSearch }) => {
 };
 
 const Home = () => {
-  const [search, setSearch] = useState("");
   const [services, setServices] = useServices();
   const [recommended, setRecommended] = useState([]);
-  const tempBranches = [
-    {
-      companyName: "360 Barber",
-      address: "543 Sherwood Park NW",
-      services: [
-        {
-          name: "Haircut",
-          description: "a deep fade with a haircut with any styles possible",
-          length: "01:00:00",
-        },
-        {
-          name: "Beard Trim",
-          description: "a skin fade on the Beard with any styles possible",
-          length: "01:00:00",
-        },
-        {
-          name: "Wax",
-          description: "we can wax any part of your body",
-          length: "01:00:00",
-        },
-        {
-          name: "Haircut",
-          description: "a deep fade with a haircut with any styles possible",
-          length: "01:00:00",
-        },
-      ],
-    },
-    {
-      companyName: "360 Barber",
-      address: "543 Sherwood Park NW",
-      services: [
-        {
-          name: "Haircut",
-          description: "a deep fade with a haircut with any styles possible",
-          length: "01:00:00",
-        },
-        {
-          name: "Beard Trim",
-          description: "a skin fade on the Beard with any styles possible",
-          length: "01:00:00",
-        },
-        {
-          name: "Wax",
-          description: "we can wax any part of your body",
-          length: "01:00:00",
-        },
-        {
-          name: "Haircut",
-          description: "a deep fade with a haircut with any styles possible",
-          length: "01:00:00",
-        },
-      ],
-    },
-    {
-      companyName: "360 Barber",
-      address: "543 Sherwood Park NW",
-      services: [
-        {
-          name: "Haircut",
-          description: "a deep fade with a haircut with any styles possible",
-          length: "01:00:00",
-        },
-        {
-          name: "Beard Trim",
-          description: "a skin fade on the Beard with any styles possible",
-          length: "01:00:00",
-        },
-        {
-          name: "Wax",
-          description: "we can wax any part of your body",
-          length: "01:00:00",
-        },
-      ],
-    },
-    {
-      companyName: "360 Barber",
-      address: "543 Sherwood Park NW",
-      services: [
-        {
-          name: "Haircut",
-          description: "a deep fade with a haircut with any styles possible",
-          length: "01:00:00",
-        },
-        {
-          name: "Beard Trim",
-          description: "a skin fade on the Beard with any styles possible",
-          length: "01:00:00",
-        },
-        {
-          name: "Wax",
-          description: "we can wax any part of your body",
-          length: "01:00:00",
-        },
-      ],
-    },
-  ];
+  const [openSearchModal, setOpenSearchModal] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -178,22 +84,13 @@ const Home = () => {
             }}
           />
         </div>
-        <div className="w-80">
-          <InputField
-            placeholder={"Book your service"}
-            type="text"
-            name="search"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          <FaSearch
-            size={20}
-            color="black"
-            className="relative bottom-8 left-[18rem] cursor-pointer"
-          />
+
+        <div className="mt-4">
+          {" "}
+          <SearchInputBox openSearchModal={() => setOpenSearchModal(true)} />
         </div>
         <div className="absolute bottom-6 h-10 bg-secondary w-full bg-opacity-60 flex justify-center items-center">
-          <ServiceSuggestions search={search} setSearch={setSearch} />
+          <ServiceSuggestions />
         </div>
       </div>
       <div className="flex flex-col justify-around mt-[40%] ">
@@ -202,6 +99,10 @@ const Home = () => {
         </div>
         <SearchItemDisplay branches={recommended} />
       </div>
+      <AutocompleteModal
+        open={openSearchModal}
+        onClose={() => setOpenSearchModal(false)}
+      />
     </>
   );
 };
