@@ -20,6 +20,7 @@
   "dependencies": {
     "@headlessui/react": "^1.7.9",
     "@heroicons/react": "^2.0.14",
+    "@mui/x-date-pickers": "^5.0.20",
     "bcryptjs": "^2.4.3",
     "concurrently": "^7.6.0",
     "cors": "^2.8.5",
