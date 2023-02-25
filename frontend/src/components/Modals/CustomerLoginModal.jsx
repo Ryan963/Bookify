@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
   },
   paper: {
-    backgroundColor: "#2b2d2e",
+    backgroundColor: "#1F2A40",
     border: "2px solid white",
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
@@ -114,7 +114,7 @@ const LoginModal = ({ open, setOpen, switchToRegister }) => {
             <div className="mt-6">
               Don't Have an Account?{" "}
               <span
-                className="underline cursor-pointer text-lightblue"
+                className="underline cursor-pointer text-skyblue"
                 onClick={switchToRegister}
               >
                 Register Here

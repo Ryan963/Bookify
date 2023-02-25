@@ -17,7 +17,8 @@ import SideBar from "./components/UI/SideBar";
 import Branches from "./pages/employee/Branches";
 import Employees from "./pages/employee/Employees";
 import Services from "./pages/employee/Services";
-import CalenderView from "./pages/employee/CalenderView";
+import Search from "./pages/public/Search";
+import AppointmentCalendar from "./pages/employee/Calendar";
 function App() {
   const [isOpen, setIsOpen] = useState(false);
   const width = window.innerWidth;
@@ -39,6 +40,7 @@ function App() {
               <div className="mt-24">
                 <Routes>
                   <Route path="/" element={<Home />} />
+                  <Route path="/search" element={<Search />} />
                   <Route path="/admin/login" element={<AdminLogin />} />
                   <Route path="/employee/login" element={<EmployeeLogin />} />
 
@@ -51,6 +53,7 @@ function App() {
                     <Route path="/employees" element={<Employees />} />
                     <Route path="/branches" element={<Branches />} />
                     <Route path="/services" element={<Services />} />
+                    <Route path="/calendar" element={<AppointmentCalendar />} />
                   </Route>
                   {/* all admin routes goes in here */}
                   <Route element={<PrivateAdminRoute />}>

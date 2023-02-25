@@ -101,7 +101,7 @@ const AddEmployeeModal = ({ open, setOpen, branches, employee }) => {
         handleClose();
       } else {
         console.log(res.data.message);
-        toast.error("Please check the Branch Info");
+        toast.error("Please check the Employee Info");
       }
       setDisabled(false);
     } catch (error) {
