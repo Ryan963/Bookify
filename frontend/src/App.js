@@ -34,9 +34,7 @@ function App() {
                 width: isOpen ? width - 257 : width,
                 transition: "margin-left 0.3s ease-out",
               }}
-              className={`${
-                isOpen ? "ml-64" : "mx-0"
-              } h-screen absolute top-0 `}
+              className={`${isOpen ? "ml-64" : "mx-0"} h-screen absolute top-0 `}
             >
               <NavBar open={isOpen} setIsOpen={setIsOpen} />
               <div className="mt-24">
@@ -45,10 +43,8 @@ function App() {
                   <Route path="/search" element={<Search />} />
                   <Route path="/admin/login" element={<AdminLogin />} />
                   <Route path="/employee/login" element={<EmployeeLogin />} />
-                  <Route
-                    path="/company/register"
-                    element={<CompanyRegister />}
-                  />
+
+                  <Route path="/company/register" element={<CompanyRegister />} />
                   {/* all customer routes goes in here */}
                   <Route element={<PrivateCustomerRoute />}></Route>
                   {/* all employee routes goes in here */}

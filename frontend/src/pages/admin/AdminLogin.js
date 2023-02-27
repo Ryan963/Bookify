@@ -57,26 +57,10 @@ const AdminLogin = () => {
           <hr className="m-0" />
 
           <div className="pr-5 pl-5">
-            <InputField
-              onChange={handleChange}
-              type="email"
-              name="email"
-              placeholder="Email Address"
-              value={userInfo.email}
-            />
-            <InputField
-              onChange={handleChange}
-              type={"password"}
-              name="password"
-              placeholder="Password"
-              value={userInfo.password}
-            />
+            <InputField onChange={handleChange} type="email" name="email" placeholder="Email Address" value={userInfo.email} />
+            <InputField onChange={handleChange} type={"password"} name="password" placeholder="Password" value={userInfo.password} />
             <section className={` mb-4 mt-9 flex justify-center`}>
-              <ButtonPrimary
-                type="submit"
-                disabled={disabled}
-                onClick={handleSubmit}
-              >
+              <ButtonPrimary type="submit" disabled={disabled} onClick={handleSubmit}>
                 Login
               </ButtonPrimary>
             </section>

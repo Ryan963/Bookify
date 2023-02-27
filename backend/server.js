@@ -40,7 +40,7 @@ app.use("/api/service", require("./routes/serviceRoutes"));
 app.use("/api/companyService", require("./routes/companyServiceRoute"));
 app.use("/api/branch", require("./routes/branchRoutes"));
 app.use("/api/search", require("./routes/searchRoutes"));
-
+app.use("/api/calendar", require("./routes/CalendarRoutes"));
 // serve static files from the 'images' directory
 const path = require("path");
 app.use("/images", express.static(path.join(__dirname, "../images")));
