@@ -10,8 +10,8 @@ import { toast } from "react-toastify";
 import { AdjustmentsHorizontalIcon } from "@heroicons/react/20/solid";
 import SearchFiltersModal from "../../components/Modals/SearchFiltersModal";
 import dayjs from "dayjs";
-import useLocationWithinRadius from "../../hooks/useLocationRadius";
 import { Button } from "@material-ui/core";
+import BookingModal from "../../components/Modals/BookingModal";
 const Search = () => {
   const location = useLocation();
   const service = location.state?.service;
@@ -19,6 +19,7 @@ const Search = () => {
   const [openSearchModal, setOpenSearchModal] = useState(false);
   const [openFiltersModal, setOpenFiltersModal] = useState(false);
   const [userLocation, setUserLocation] = useState({});
+  const [openBookingModal, setOpeBookingModal] = useState(false);
   const [filters, setFilters] = useState({
     distance: 30,
     selectedDate: dayjs(new Date()),
@@ -114,6 +115,67 @@ const Search = () => {
       result.branchLongitude
     );
   });
+
+  const mockData = {
+    company: {
+      id: 1,
+      name: "ABC Salon",
+      logoUrl: "https://example.com/logo.png",
+      services: [
+        {
+          id: 1,
+          name: "Haircut",
+          description: "A basic haircut",
+          price: 50,
+          duration: 30,
+        },
+        {
+          id: 2,
+          name: "Coloring",
+          description: "A basic hair coloring",
+          price: 100,
+          duration: 60,
+        },
+        {
+          id: 3,
+          name: "Manicure",
+          description: "A basic manicure",
+          price: 30,
+          duration: 30,
+        },
+      ],
+    },
+    branch: {
+      id: 1,
+      name: "Main Branch",
+      address: "1234 Main St, Anytown USA",
+      phone: "555-1234",
+      email: "mainbranch@abcsalon.com",
+      workDays: [
+        { dayOfWeek: "MON", startTime: "09:00", endTime: "18:00" },
+        { dayOfWeek: "TUE", startTime: "09:00", endTime: "18:00" },
+        { dayOfWeek: "WED", startTime: "09:00", endTime: "18:00" },
+        { dayOfWeek: "THU", startTime: "09:00", endTime: "20:00" },
+        { dayOfWeek: "FRI", startTime: "09:00", endTime: "20:00" },
+        { dayOfWeek: "SAT", startTime: "10:00", endTime: "16:00" },
+        { dayOfWeek: "SUN", startTime: "10:00", endTime: "16:00" },
+      ],
+      employees: [
+        { id: 1, name: "John Doe", title: "Stylist" },
+        { id: 2, name: "Jane Smith", title: "Stylist" },
+        { id: 3, name: "Bob Johnson", title: "Nail Technician" },
+      ],
+    },
+    service: {
+      id: 1,
+      name: "Haircut",
+      description: "A basic haircut",
+      price: 50,
+      duration: 30,
+      employeeTypes: ["Stylist"],
+    },
+  };
+
   return (
     <>
       <div className="flex items-center justify-center">
@@ -135,7 +197,10 @@ const Search = () => {
           <Spinner />
         </div>
       ) : (
-        <SearchItemDisplay branches={filteredResults} />
+        <SearchItemDisplay
+          branches={filteredResults}
+          openBookingModal={() => setOpeBookingModal(true)}
+        />
       )}
       <AutocompleteModal
         open={openSearchModal}
@@ -146,6 +211,13 @@ const Search = () => {
         onClose={() => setOpenFiltersModal(false)}
         filters={filters}
         setFilters={setFilters}
+      />
+      <BookingModal
+        company={mockData.company}
+        branch={mockData.branch}
+        service={mockData.service}
+        isOpen={openBookingModal}
+        onClose={() => setOpeBookingModal(false)}
       />
     </>
   );

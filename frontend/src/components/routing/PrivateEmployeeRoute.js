@@ -7,7 +7,8 @@ const PrivateEmployeeRoute = () => {
   return !userEmail ||
     userEmail.length === 0 ||
     !userType ||
-    userType.toLowerCase() !== "employee" ? (
+    (userType.toLowerCase() !== "employee" &&
+      userType.toLowerCase() !== "employeemanager") ? (
     <Navigate to="/employee/login" />
   ) : (
     <Outlet />

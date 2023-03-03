@@ -8,6 +8,7 @@ import ButtonSecondary from "../UI/ButtonSecondary";
 import axios from "axios";
 import { toast } from "react-toastify";
 import useServices from "../../hooks/useServices";
+import { InputLabel, MenuItem, Select } from "@material-ui/core";
 const useStyles = makeStyles((theme) => ({
   modal: {
     display: "flex",
@@ -15,11 +16,13 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
   },
   paper: {
-    backgroundColor: "#2b2d2e",
+    backgroundColor: "#282c34",
+    borderRadius: "5px",
     border: "2px solid white",
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
     width: "30%",
+    minWidth: "500px",
     height: "fit-content",
     marginTop: "50px",
   },
@@ -45,8 +48,8 @@ const AddCompanyServiceModal = ({
   const [services, setServies] = useServices();
   const [companyServiceInfo, setCompanyServiceInfo] = useState({
     serviceId: null,
-    hourslength: "00",
-    minuteslength: "00",
+    hourslength: "",
+    minuteslength: "",
     price: null,
     companyId: null,
   });
@@ -72,6 +75,8 @@ const AddCompanyServiceModal = ({
   };
   const handleAddingCompanyService = async (e) => {
     e.preventDefault();
+
+    console.log(companyServiceInfo);
     setDisabled(true);
     console.log(companyServiceInfo);
     for (let info in companyServiceInfo) {
@@ -94,6 +99,7 @@ const AddCompanyServiceModal = ({
         ? "0" + companyServiceInfo.minuteslength
         : companyServiceInfo.minuteslength;
     const length = `${hoursLength}:${minuteslength}`;
+
     try {
       const res = await axios.post(
         `${process.env.REACT_APP_SERVER_URL}/companyService/`,
@@ -136,37 +142,34 @@ const AddCompanyServiceModal = ({
     >
       <Fade in={open}>
         <div className={classes.paper}>
-          <div className="flex justify-center items-center font-bold text-2xl mb-8">
+          <div className="flex justify-center items-center font-bold text-2xl mb-8 ">
             <span>Add a New Service</span>
           </div>
           <form className={classes.form} noValidate>
-            <select
-              className="w-full rounded-lg h-10 text-black hover:border-sky-500 focus:border-skyblue"
-              name="serviceId"
-              id="serviceId"
-              placeholder="Service Id"
-              onSelect={(e) =>
-                setCompanyServiceInfo({
-                  ...companyServiceInfo,
-                  serviceId: Number(e.target.value),
-                })
-              }
+            <label id="employee-select-label" className="text-white  ">
+              Select a Service
+            </label>
+            <Select
+              style={{
+                width: "100%",
+              }}
+              labelId="service-select-label"
+              value={companyServiceInfo.serviceId}
               onChange={(e) =>
                 setCompanyServiceInfo({
                   ...companyServiceInfo,
                   serviceId: Number(e.target.value),
                 })
               }
-              value={companyServiceInfo.serviceId}
             >
               {services
                 .filter((service) => !currentServicesIds.includes(service.id))
                 .map((service) => (
-                  <option key={service.id} value={service.id}>
+                  <MenuItem key={service.id} value={service.id}>
                     {service.name}
-                  </option>
+                  </MenuItem>
                 ))}
-            </select>
+            </Select>
 
             <InputField
               name="price"

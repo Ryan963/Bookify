@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
   searchField: {
     position: "sticky",
     minWidth: "500px",
-    top: 0,
+    top: 3,
     borderTopRightRadius: "5px",
     borderTopLeftRadius: "5px",
     paddingTop: "2px",
@@ -34,6 +34,7 @@ const useStyles = makeStyles((theme) => ({
     overflowY: "auto",
     borderBottomRightRadius: "5px",
     borderBottomLeftRadius: "5px",
+    minHeight: "300px",
   },
 }));
 
@@ -71,6 +72,11 @@ const AutocompleteModal = ({ open, onClose }) => {
   function handleResultClick(result) {
     onClose();
     navigate("/search", { state: { service: result } });
+  }
+
+  function handleBusinessClick(result) {
+    onClose();
+    navigate("/company", { state: { company: result } });
   }
 
   // Function to handle search term change
@@ -123,7 +129,11 @@ const AutocompleteModal = ({ open, onClose }) => {
               className="text-skyblue font-semibold text-lg"
             />
             {businessResults.map((result) => (
-              <ListItem button key={result.id}>
+              <ListItem
+                button
+                key={result.id}
+                onClick={() => handleBusinessClick(result)}
+              >
                 <ListItemText primary={result.name} />
               </ListItem>
             ))}
@@ -135,12 +145,7 @@ const AutocompleteModal = ({ open, onClose }) => {
 
   return (
     <Modal className={classes.modal} open={open} onClose={onClose}>
-      <div
-        style={{
-          minWidth: "500px",
-          borderRadius: "20px",
-        }}
-      >
+      <div>
         <TextField
           className={classes.searchField}
           label="Search"
