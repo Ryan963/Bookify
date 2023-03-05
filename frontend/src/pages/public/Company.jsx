@@ -80,7 +80,7 @@ const Company = () => {
             ))}
         </div>
       </div>
-      <div className="mr-6 border-skyblue border max-w-[360px] p-1 rounded-lg">
+      <div className="mr-6 border-skyblue border  bg-[#282c34]  max-w-[350px]  rounded-lg">
         <div style={{ width: 350, height: 250 }}>
           <div
             style={{
@@ -97,10 +97,10 @@ const Company = () => {
             )}
           </div>
         </div>
-        <p className="my-4">
+        <p className="my-6 mx-2">
           Address: <strong>{branch.address}</strong>
         </p>
-        <p className="mt-2">{company.description}</p>
+        <p className="mt-2 mx-2">{company.description}</p>
         <h2 className="text-center text-2xl mt-2 font-semibold">Schedule</h2>
         <div className="w-full">
           <DayBlock
