@@ -27,10 +27,12 @@ const {
   delCompany,
   getnotApprovedCompanies,
   updateCompany,
+  getCompanyByName,
 } = require("../controllers/companyController");
 router.post("/create", upload.single("homePic"), createCompany);
 router.delete("/delete", delCompany);
 router.put("/update", updateCompany);
+router.get("/name", getCompanyByName);
 
 router.get("/", getnotApprovedCompanies);
 module.exports = router;

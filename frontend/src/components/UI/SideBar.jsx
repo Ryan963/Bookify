@@ -23,7 +23,7 @@ const SideBar = ({ isOpen, setIsOpen }) => {
     <Sidebar
       rootStyles={{
         [`.${sidebarClasses.container}`]: {
-          backgroundColor: "#2b2d2e",
+          backgroundColor: "#1b3768",
           border: "None",
         },
       }}
@@ -34,34 +34,37 @@ const SideBar = ({ isOpen, setIsOpen }) => {
       } absolute top-0 left-0  w-64 bg-dark z-10 h-screen`}
     >
       <Menu>
-        {userType === "employee" && (
-          <>
-            <MenuItem
-              component={<Link to="/employees"></Link>}
-              className="hover:text-black"
-            >
-              Employees
-            </MenuItem>
-            <MenuItem
-              component={<Link to="/branches"></Link>}
-              className="hover:text-black"
-            >
-              Branches
-            </MenuItem>
-            <MenuItem
-              component={<Link to="/services"></Link>}
-              className="hover:text-black"
-            >
-              Services
-            </MenuItem>
-          </>
-        )}
+        {userType === "employee" ||
+          (userType === "employeeManager" && (
+            <>
+              <MenuItem
+                component={<Link to="/employees"></Link>}
+                className="hover:text-black"
+              >
+                Employees
+              </MenuItem>
+              <MenuItem
+                component={<Link to="/branches"></Link>}
+                className="hover:text-black"
+              >
+                Branches
+              </MenuItem>
+              <MenuItem
+                component={<Link to="/services"></Link>}
+                className="hover:text-black"
+              >
+                Services
+              </MenuItem>
+            </>
+          ))}
         {userType === "user" && (
           <>
-            <MenuItem className="hover:text-black"> Pie charts </MenuItem>
-            <MenuItem className="hover:text-black"> Line charts </MenuItem>
-            <MenuItem className="hover:text-black"> Documentation </MenuItem>
-            <MenuItem className="hover:text-black"> Calendar </MenuItem>
+            <MenuItem
+              component={<Link to="/profile"></Link>}
+              className="hover:text-black"
+            >
+              Profile
+            </MenuItem>
           </>
         )}
       </Menu>

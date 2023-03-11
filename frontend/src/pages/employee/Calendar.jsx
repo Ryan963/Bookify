@@ -5,7 +5,6 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import { makeStyles } from "@material-ui/core/styles";
 import { useState } from "react";
 import axios from "axios";
-
 const localizer = momentLocalizer(moment);
 
 const useStyles = makeStyles((theme) => ({
@@ -25,6 +24,10 @@ const AppointmentTooltip = ({ appointment }) => {
     </div>
   );
 };
+
+function Event({ event }) {
+  return <div className="w-50 h-32">{event.title}</div>;
+}
 
 function AppointmentCalendar() {
   const classes = useStyles();
@@ -46,16 +49,44 @@ function AppointmentCalendar() {
     // you will need to set the bookingData state to the data after you manipulate it
     // to match the data above
     // to set the booking data do this setBookingData(Your Final Data Goes here)
-    axios.get(`${process.env.REACT_APP_SERVER_URL}/calendar/`).then((response) => {
-      const initalData = response.data.data;
-      console.log(initalData);
-      setBookingData(initalData);
-    });
+    axios
+      .get(`${process.env.REACT_APP_SERVER_URL}/calendar/`)
+      .then((response) => {
+        const initalData = response.data.data;
+        console.log(initalData);
+        setBookingData(initalData);
+      });
   }, []);
 
   return (
     <div>
-      <Calendar localizer={localizer} events={bookingData} startAccessor="start" endAccessor="end" views={["month", "week"]} step={30} defaultView="month" className={classes.calendar} popup={true} selectable />
+      <Calendar
+        localizer={localizer}
+        events={bookingData}
+        startAccessor={(event) => {
+          return new Date(event.start);
+        }}
+        endAccessor={(event) => {
+          return new Date(event.end);
+        }}
+        views={["month", "week"]}
+        step={30}
+        defaultView="month"
+        className={classes.calendar}
+        popup={true}
+        components={{
+          event: Event,
+          timeSlotWrapper: (props) => (
+            <div
+              style={{
+                height: "50px",
+              }}
+              {...props}
+            />
+          ),
+        }}
+        selectable
+      />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import React from "react";
 import ButtonPrimary from "../UI/ButtonPrimary";
-const SearchItemDisplay = ({ branches }) => {
+const SearchItemDisplay = ({ branches, openBookingModal }) => {
   console.log(branches);
   return (
     <>
@@ -27,7 +27,10 @@ const SearchItemDisplay = ({ branches }) => {
                       <p>{service.description}</p>
                     </div>
                     <div className="w-16 h-12 my-2">
-                      <button className="bg-skyblue text-sm rounded-lg w-16 h-10">
+                      <button
+                        onClick={openBookingModal}
+                        className="bg-skyblue text-sm rounded-lg w-16 h-10"
+                      >
                         Book
                       </button>
                     </div>

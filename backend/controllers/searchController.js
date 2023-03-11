@@ -115,8 +115,8 @@ const searchService = async (req, res) => {
           longitude: parseFloat(a.branchLongitude),
         });
         const distanceB = calculateDistance(userLocation, {
-          latitude: parseFloat(a.branchLatitude),
-          longitude: parseFloat(a.branchLongitude),
+          latitude: parseFloat(b.branchLatitude),
+          longitude: parseFloat(b.branchLongitude),
         });
         return distanceA - distanceB;
       });

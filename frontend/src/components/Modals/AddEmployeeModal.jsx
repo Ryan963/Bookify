@@ -16,7 +16,8 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
   },
   paper: {
-    backgroundColor: "#2b2d2e",
+    backgroundColor: "#282c34",
+    borderRadius: "5px",
     border: "2px solid white",
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
@@ -75,6 +76,7 @@ const AddEmployeeModal = ({ open, setOpen, branches, employee }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setDisabled(true);
+    console.log(userInfo);
     for (let info in userInfo) {
       if (
         userInfo[info] === null ||

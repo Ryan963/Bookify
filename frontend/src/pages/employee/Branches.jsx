@@ -120,6 +120,8 @@ const Branches = () => {
       field: "current",
       headerName: "Current",
       headerAlign: "center",
+
+      flex: 1,
       renderCell: ({ row: { current } }) => {
         return (
           <Box

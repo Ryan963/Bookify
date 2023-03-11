@@ -11,9 +11,9 @@ const AdminHome = () => {
     []
   ); /* updates the array . state derives the whole application */
   const [notApprovedFilter, setNotApprovedFilter] = useState(true);
-    const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState(null);
-
+  console.log(companies);
   useEffect(() => {
     getCompanies();
   }, []);
@@ -32,7 +32,6 @@ const AdminHome = () => {
   const handleFilterChange = () => {
     setNotApprovedFilter(!notApprovedFilter);
   };
-
 
   const approveCompany = async (id) => {
     try {
@@ -130,51 +129,53 @@ const AdminHome = () => {
                 .map((company, index) => {
                   return (
                     <>
-                    <Grid
-                      key={index}
-                      container
-                      spacing={2}
-                      className="mt-8 pb-3 pt-1 mb-6  items-center rounded-3xl  bg-secondary text-grey content-center"
-                    >
-                      <Grid item xs={2}>
-                        <div>{company.id}</div>
-                      </Grid>
-                      <Grid item xs={2}>
-                        <div>{company.name}</div>
-                      </Grid>
-                      <Grid item xs={2}>
-                        <div>{company.number}</div>
-                      </Grid>
+                      <Grid
+                        key={index}
+                        container
+                        spacing={2}
+                        className="mt-8 pb-3 pt-1 mb-6  items-center rounded-3xl  bg-secondary text-grey content-center"
+                      >
+                        <Grid item xs={2}>
+                          <div>{company.id}</div>
+                        </Grid>
+                        <Grid item xs={2}>
+                          <div>{company.name}</div>
+                        </Grid>
+                        <Grid item xs={2}>
+                          <div>{company.number}</div>
+                        </Grid>
 
-                      <Grid item xs={2}>
-                        <div>{company.email}</div>
+                        <Grid item xs={2}>
+                          <div>{company.email}</div>
+                        </Grid>
+                        <Grid item xs={1}></Grid>
+
+                        <Grid item xs={3}>
+                          <div className="mx-8">
+                            <DropDown>
+                              {notApprovedFilter && (
+                                <>
+                                  <MenuItem
+                                    onClick={() => approveCompany(company.id)}
+                                    name="Approve"
+                                  />
+                                  <MenuItem
+                                    onClick={() => deleteCompany(company.id)}
+                                    name="Decline"
+                                  />
+                                </>
+                              )}
+                              <MenuItem
+                                onClick={() => {
+                                  setSelectedCompany(company);
+                                  setOpen(true);
+                                }}
+                                name="View Info"
+                              />
+                            </DropDown>
+                          </div>
+                        </Grid>
                       </Grid>
-                      <Grid item xs={1}></Grid>
-
-                      <Grid item xs={3}>
-                        <div className="mx-8">
-                          
-                          <DropDown>
-
-                        {notApprovedFilter && (
-                          <>
-                           <MenuItem   onClick={() => approveCompany(company.id)}
-                           name="Approve"/>
-                       <MenuItem onClick={() => deleteCompany(company.id)}
-                           name="Decline"/>
-                          </>
-                        )}
-                          <MenuItem onClick={() =>{
-                            setSelectedCompany(company)
-                             setOpen(true)}}
-                            name="View Info"/>
-
-
-                          </DropDown>
-                        </div>
-                      </Grid>
-                    </Grid>
-     
                     </>
                   );
                 })}
@@ -186,7 +187,11 @@ const AdminHome = () => {
           )}
         </div>
       </div>
-      <ViewCompanyModal open={open} onClose={() => setOpen(false)} company={selectedCompany} />
+      <ViewCompanyModal
+        open={open}
+        onClose={() => setOpen(false)}
+        company={selectedCompany}
+      />
     </div>
   );
 };
