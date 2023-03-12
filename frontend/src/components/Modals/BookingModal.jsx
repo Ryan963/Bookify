@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Dialog,
@@ -21,6 +21,9 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers";
 import TimeSlotSelect from "../UI/TimeSlotSelect";
+import useEmployees from "../../hooks/useEmployees";
+import { convertTime } from "../../helpers/convert-times";
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -39,19 +42,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const BookingModal = ({
-  company,
-  branch,
-  service,
-  isOpen,
-  onClose,
-  onSave,
-}) => {
+const BookingModal = ({ company, isOpen, onClose, onSave }) => {
   const classes = useStyles();
-  const [selectedDate, setSelectedDate] = React.useState(new Date());
-  const [selectedTimeSlot, setSelectedTimeSlot] = React.useState(null);
-  const [selectedEmployee, setSelectedEmployee] = React.useState("anyone");
-  const employees = branch.employees;
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
+  const [selectedEmployee, setSelectedEmployee] = useState("anyone");
+  const [employees, setEmployees] = useEmployees(company.id, []);
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -77,6 +73,12 @@ const BookingModal = ({
     onClose();
   };
 
+  useEffect(() => {
+    if (company && company.service) {
+      return;
+    }
+  }, [company]);
+
   const availableTimeSlots = [
     "10:00",
     "11:00",
@@ -94,61 +96,70 @@ const BookingModal = ({
 
   return (
     <Dialog open={isOpen} onClose={handleCancel} fullWidth maxWidth="sm">
-      <div className={classes.root}>
-        <DialogTitle>Booking Form</DialogTitle>
-        <DialogContent>
-          <Grid container spacing={2}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                className={classes.input}
-                renderInput={(props) => <TextField {...props} />}
-                label="Select a date"
-                value={selectedDate}
-                onChange={handleDateChange}
-                minDate={dayjs(new Date())}
-              />
-            </LocalizationProvider>
-            <Grid item xs={12}>
-              <TimeSlotSelect availableTimeSlots={availableTimeSlots} />
+      {company.service && (
+        <div className={classes.root}>
+          <DialogTitle>Booking Form</DialogTitle>
+          <DialogContent>
+            <Grid container spacing={2}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  className={classes.input}
+                  renderInput={(props) => <TextField {...props} />}
+                  label="Select a date"
+                  value={selectedDate}
+                  onChange={handleDateChange}
+                  minDate={dayjs(new Date())}
+                />
+              </LocalizationProvider>
+              <Grid item xs={12}>
+                <TimeSlotSelect availableTimeSlots={availableTimeSlots} />
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <InputLabel id="employee-select-label">
+                    Select an Employee
+                  </InputLabel>
+                  <Select
+                    labelId="employee-select-label"
+                    value={selectedEmployee}
+                    onChange={handleEmployeeSelect}
+                  >
+                    <MenuItem value="anyone">Anyone</MenuItem>
+                    {employees.map((employee) => (
+                      <MenuItem key={employee.id} value={employee}>
+                        {employee.firstname} {employee.lastname}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <Typography variant="h6">Service Information</Typography>
+                <Typography variant="subtitle1">
+                  {company.service.name}
+                </Typography>
+                <Typography variant="body2">
+                  {company.service.description}
+                </Typography>
+                <Typography variant="subtitle2">{`Price: ${company.service.price}$`}</Typography>
+                <Typography variant="subtitle2">{`Length: ${convertTime(
+                  company.service.length
+                )}`}</Typography>
+              </Grid>
             </Grid>
-            <Grid item xs={12}>
-              <FormControl fullWidth>
-                <InputLabel id="employee-select-label">
-                  Select an Employee
-                </InputLabel>
-                <Select
-                  labelId="employee-select-label"
-                  value={selectedEmployee}
-                  onChange={handleEmployeeSelect}
-                >
-                  <MenuItem value="anyone">Anyone</MenuItem>
-                  {employees.map((employee) => (
-                    <MenuItem key={employee.id} value={employee.id}>
-                      {employee.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="h6">Service Information</Typography>
-              <Typography variant="subtitle1">{service.name}</Typography>
-              <Typography variant="body2">{service.description}</Typography>
-              <Typography variant="subtitle2">{`Price: ${service.price}$`}</Typography>
-            </Grid>
-          </Grid>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCancel}>Cancel</Button>
-          <Button
-            color="primary"
-            onClick={handleSave}
-            disabled={!selectedTimeSlot}
-          >
-            Save
-          </Button>
-        </DialogActions>
-      </div>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCancel}>Cancel</Button>
+            <Button
+              color="primary"
+              onClick={handleSave}
+              disabled={!selectedTimeSlot}
+            >
+              Save
+            </Button>
+          </DialogActions>
+        </div>
+      )}
     </Dialog>
   );
 };

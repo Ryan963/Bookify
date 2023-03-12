@@ -1,7 +1,10 @@
 import React from "react";
 import ButtonPrimary from "../UI/ButtonPrimary";
-const SearchItemDisplay = ({ branches, openBookingModal }) => {
-  console.log(branches);
+const SearchItemDisplay = ({
+  branches,
+  openBookingModal,
+  selectBookingService,
+}) => {
   return (
     <>
       {branches.map((branch) => (
@@ -28,7 +31,10 @@ const SearchItemDisplay = ({ branches, openBookingModal }) => {
                     </div>
                     <div className="w-16 h-12 my-2">
                       <button
-                        onClick={openBookingModal}
+                        onClick={() => {
+                          selectBookingService({ ...branch, service: service });
+                          openBookingModal();
+                        }}
                         className="bg-skyblue text-sm rounded-lg w-16 h-10"
                       >
                         Book

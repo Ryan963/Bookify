@@ -20,6 +20,7 @@ const Search = () => {
   const [openFiltersModal, setOpenFiltersModal] = useState(false);
   const [userLocation, setUserLocation] = useState({});
   const [openBookingModal, setOpeBookingModal] = useState(false);
+  const [selectedBookingService, setSelectedBookingService] = useState({});
   const [filters, setFilters] = useState({
     distance: 30,
     selectedDate: dayjs(new Date()),
@@ -200,6 +201,7 @@ const Search = () => {
         <SearchItemDisplay
           branches={filteredResults}
           openBookingModal={() => setOpeBookingModal(true)}
+          selectBookingService={setSelectedBookingService}
         />
       )}
       <AutocompleteModal
@@ -213,9 +215,7 @@ const Search = () => {
         setFilters={setFilters}
       />
       <BookingModal
-        company={mockData.company}
-        branch={mockData.branch}
-        service={mockData.service}
+        company={selectedBookingService}
         isOpen={openBookingModal}
         onClose={() => setOpeBookingModal(false)}
       />
