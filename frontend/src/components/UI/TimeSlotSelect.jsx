@@ -15,8 +15,8 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    width: theme.spacing(10),
-    minWidth: theme.spacing(10),
+    width: "10rem",
+    minWidth: "160px",
     height: theme.spacing(6),
     marginRight: theme.spacing(1),
     borderRadius: theme.shape.borderRadius,
@@ -39,10 +39,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function TimeSlotSelect(props) {
+function TimeSlotSelect({
+  availableTimeSlots,
+  selectedTimeSlot,
+  setSelectedTimeSlot,
+}) {
   const classes = useStyles();
-  const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
-
   function formatTimeSlot(timeSlot) {
     const [hour, minute] = timeSlot.split(":");
     const hourInt = parseInt(hour, 10);
@@ -52,6 +54,7 @@ function TimeSlotSelect(props) {
   }
 
   const handleTimeSlotSelect = (timeSlot) => {
+    console.log(timeSlot);
     setSelectedTimeSlot(timeSlot);
   };
 
@@ -59,7 +62,7 @@ function TimeSlotSelect(props) {
     <>
       <Typography variant="h6">Select a Time</Typography>
       <div className={classes.timeSlotsContainer}>
-        {props.availableTimeSlots.map((timeSlot) => (
+        {availableTimeSlots.map((timeSlot) => (
           <div
             className={clsx(classes.timeSlot, {
               [classes.timeSlotSelected]: selectedTimeSlot === timeSlot,
@@ -67,7 +70,7 @@ function TimeSlotSelect(props) {
             key={timeSlot}
             onClick={() => handleTimeSlotSelect(timeSlot)}
           >
-            {formatTimeSlot(timeSlot)}
+            {formatTimeSlot(timeSlot[0])} - {formatTimeSlot(timeSlot[1])}
           </div>
         ))}
       </div>

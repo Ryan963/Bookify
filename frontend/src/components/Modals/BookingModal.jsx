@@ -24,6 +24,10 @@ import TimeSlotSelect from "../UI/TimeSlotSelect";
 import useEmployees from "../../hooks/useEmployees";
 import { convertTime } from "../../helpers/convert-times";
 import axios from "axios";
+import { toast } from "react-toastify";
+import ButtonPrimary from "../UI/ButtonPrimary";
+import LoginModal from "./CustomerLoginModal";
+import RegisterModal from "./CustomerRegisterModal";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,9 +49,13 @@ const useStyles = makeStyles((theme) => ({
 const BookingModal = ({ company, isOpen, onClose, onSave }) => {
   const classes = useStyles();
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [openLoginModal, setOpenLoginModal] = useState(false);
+  const [openRegisterModal, setOpenRegisterModal] = useState(false);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
   const [selectedEmployee, setSelectedEmployee] = useState("anyone");
-  const [employees, setEmployees] = useEmployees(company.id, []);
+  const [employees, setEmployees] = useEmployees(company.id, [company]);
+  console.log(employees);
+  const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -74,25 +82,72 @@ const BookingModal = ({ company, isOpen, onClose, onSave }) => {
   };
 
   useEffect(() => {
-    if (company && company.service) {
-      return;
-    }
-  }, [company]);
+    (async () => {
+      if (company && company.service) {
+        try {
+          const res = await axios.get(
+            `${process.env.REACT_APP_SERVER_URL}/search/slots`,
+            {
+              params: {
+                companyId: company.id,
+                branchId: company.branchId,
+                service: company.service,
+                employeeId:
+                  selectedEmployee === "anyone" ? null : selectedEmployee.id,
+                selectedDate: selectedDate,
+              },
+            }
+          );
+          console.log(res.data);
+          setAvailableTimeSlots(res.data.availableSlots);
+        } catch (error) {
+          toast.error("Could not retrieve the time slots");
+          console.log(error);
+        }
+      }
+    })();
+    console.log(company);
+  }, [company, selectedEmployee, selectedDate]);
 
-  const availableTimeSlots = [
-    "10:00",
-    "11:00",
-    "12:00",
-    "13:00",
-    "14:00",
-    "15:00",
-    "16:00",
-    "17:00",
-    "18:00",
-    "19:00",
-    "20:00",
-    "21:00",
-  ];
+  const bookAppointment = async () => {
+    const userEmail = localStorage.getItem("email");
+    const userType = localStorage.getItem("type");
+    const userExists = userEmail && userEmail.length !== 0;
+    console.log(userEmail);
+    console.log("heello", selectedDate, selectedEmployee, selectedTimeSlot);
+    const isCustomer = userType && userType.toLowerCase() !== "customer";
+    if (userExists && isCustomer) {
+      try {
+        const res = await axios.post(
+          `${process.env.REACT_APP_SERVER_URL}/booking`,
+          {
+            customerEmail: userEmail,
+            booking: {
+              serviceId: company?.service.id,
+              companyId: company.id,
+              employeeId:
+                selectedEmployee === "anyone" ? null : selectedEmployee?.id,
+              branchId: company.branchId,
+              date: new Date(selectedDate),
+              startTime: selectedTimeSlot[0],
+              endTime: selectedTimeSlot[1],
+              cancelled: false,
+            },
+          }
+        );
+        if (res.data.success) {
+          toast.success("Your appointment has been booked successfully");
+        } else {
+          toast.error("Your request could not be completed at this time");
+        }
+      } catch (error) {
+        console.log(error);
+        toast.error(error.message);
+      }
+    } else {
+      setOpenLoginModal(true);
+    }
+  };
 
   return (
     <Dialog open={isOpen} onClose={handleCancel} fullWidth maxWidth="sm">
@@ -112,7 +167,11 @@ const BookingModal = ({ company, isOpen, onClose, onSave }) => {
                 />
               </LocalizationProvider>
               <Grid item xs={12}>
-                <TimeSlotSelect availableTimeSlots={availableTimeSlots} />
+                <TimeSlotSelect
+                  selectedTimeSlot={selectedTimeSlot}
+                  setSelectedTimeSlot={setSelectedTimeSlot}
+                  availableTimeSlots={availableTimeSlots}
+                />
               </Grid>
               <Grid item xs={12}>
                 <FormControl fullWidth>
@@ -125,11 +184,15 @@ const BookingModal = ({ company, isOpen, onClose, onSave }) => {
                     onChange={handleEmployeeSelect}
                   >
                     <MenuItem value="anyone">Anyone</MenuItem>
-                    {employees.map((employee) => (
-                      <MenuItem key={employee.id} value={employee}>
-                        {employee.firstname} {employee.lastname}
-                      </MenuItem>
-                    ))}
+                    {employees
+                      .filter(
+                        (employee) => employee.branchId === company.branchId
+                      )
+                      .map((employee) => (
+                        <MenuItem key={employee.id} value={employee}>
+                          {employee.firstname} {employee.lastname}
+                        </MenuItem>
+                      ))}
                   </Select>
                 </FormControl>
               </Grid>
@@ -148,18 +211,29 @@ const BookingModal = ({ company, isOpen, onClose, onSave }) => {
               </Grid>
             </Grid>
           </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCancel}>Cancel</Button>
-            <Button
-              color="primary"
-              onClick={handleSave}
-              disabled={!selectedTimeSlot}
-            >
-              Save
-            </Button>
-          </DialogActions>
+          <div className="my-4 mx-4">
+            <ButtonPrimary onClick={bookAppointment}>
+              Book Appointment
+            </ButtonPrimary>
+          </div>
         </div>
       )}
+      <LoginModal
+        open={openLoginModal}
+        setOpen={setOpenLoginModal}
+        switchToRegister={() => {
+          setOpenLoginModal(false);
+          setOpenRegisterModal(true);
+        }}
+      />
+      <RegisterModal
+        open={openRegisterModal}
+        setOpen={setOpenRegisterModal}
+        switchToLogin={() => {
+          setOpenLoginModal(true);
+          setOpenRegisterModal(false);
+        }}
+      />
     </Dialog>
   );
 };

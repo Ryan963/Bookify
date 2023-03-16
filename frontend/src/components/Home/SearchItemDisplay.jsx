@@ -5,6 +5,7 @@ const SearchItemDisplay = ({
   openBookingModal,
   selectBookingService,
 }) => {
+  console.log(branches);
   return (
     <>
       {branches.map((branch) => (
@@ -19,9 +20,9 @@ const SearchItemDisplay = ({
             )}
             <div className="ml-10 flex-1 mr-6">
               <h3 className="text-4xl font-bold text-orange-600">
-                {branch.companyName}
+                {branch.name}
               </h3>
-              <h3 className="text-xl font-semibold ">{branch.address}</h3>
+              <h3 className="text-xl font-semibold ">{branch.branchAddress}</h3>
               {branch.services.slice(0, 3).map((service) => (
                 <div key={service.name}>
                   <div className="flex justify-between mt-2">
