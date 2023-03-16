@@ -1,5 +1,6 @@
 const db = require("../config/db");
 const fs = require("fs");
+
 const {
   isLocationWithinRadius,
   calculateDistance,
@@ -146,9 +147,123 @@ const searchService = async (req, res) => {
     conn.release();
   }
 };
+const Moment = require("moment-timezone");
+const MomentRange = require("moment-range");
+const moment = MomentRange.extendMoment(Moment);
+const getAvailableSlots = async (req, res) => {
+  const { service, employeeId, companyId, branchId, selectedDate } = req.query;
 
+  const conn = await db.awaitGetConnection();
+
+  try {
+    // Get the company's business hours
+    const [company] = await conn.awaitQuery(
+      "SELECT mondayStart, mondayEnd, tuesdayStart, tuesdayEnd, wednesdayStart, wednesdayEnd, thursdayStart, thursdayEnd, fridayStart, fridayEnd, saturdayStart, saturdayEnd, sundayStart, sundayEnd FROM Company WHERE id = ?",
+      [companyId]
+    );
+
+    // Get all the booked slots for the given date and branch
+    const selDate = moment(selectedDate).toISOString().slice(0, 10);
+    console.log(selDate);
+    let bookedSlots = [];
+    if (employeeId) {
+      bookedSlots = await conn.awaitQuery(
+        "SELECT startTime, endTime FROM Bookings WHERE branchId = ? AND employeeId = ? AND date = ?",
+        [branchId, employeeId, selDate]
+      );
+    } else {
+      bookedSlots = await conn.awaitQuery(
+        "SELECT startTime, endTime FROM Bookings WHERE branchId = ? AND date = ?",
+        [branchId, selDate]
+      );
+    }
+    console.log(bookedSlots);
+
+    // Convert the booked slots to an array of moment ranges
+    const bookedRanges = bookedSlots.map((slot) => {
+      const start = moment.tz(
+        `${selDate} ${slot.startTime}`,
+        "YYYY-MM-DD HH:mm:ss",
+        "UTC"
+      );
+      const end = moment.tz(
+        `${selDate} ${slot.endTime}`,
+        "YYYY-MM-DD HH:mm:ss",
+        "UTC"
+      );
+      return moment.range(start, end);
+    });
+    console.log(bookedRanges);
+
+    // Determine the start and end times for the given date based on the company's business hours
+    const dayOfWeek = moment(selDate).day();
+    const startTime = moment.tz(
+      `${selDate} ${
+        company[`${moment.weekdays(dayOfWeek).toLowerCase()}Start`]
+      }`,
+      "YYYY-MM-DD HH:mm:ss",
+      "UTC"
+    );
+    const endTime = moment.tz(
+      `${selDate} ${company[`${moment.weekdays(dayOfWeek).toLowerCase()}End`]}`,
+      "YYYY-MM-DD HH:mm:ss",
+      "UTC"
+    );
+
+    // Generate all the available slots for the given date and branch
+    const serviceLength = moment.duration(service.length).as("minutes");
+    const availableSlots = [];
+    let currentTime = startTime.clone();
+    while (currentTime.isBefore(endTime)) {
+      // Check if the current time falls within the business hours
+      const currentDayOfWeek = moment.weekdays(dayOfWeek).toLowerCase();
+      const currentStart = moment.utc(
+        company[`${currentDayOfWeek}Start`],
+        "HH:mm:ss"
+      );
+      const currentEnd = moment.utc(
+        company[`${currentDayOfWeek}End`],
+        "HH:mm:ss"
+      );
+      const isWithinBusinessHours = currentTime.isBetween(
+        currentStart,
+        currentEnd,
+        null,
+        "[]"
+      );
+
+      // Check if the current slot is available
+      const slotStart = currentTime.clone();
+      const slotEnd = currentTime.clone().add(serviceLength, "minutes");
+      const slotRange = moment.range(slotStart, slotEnd);
+
+      const isAvailable = !bookedRanges.some((bookedRange) =>
+        bookedRange.overlaps(slotRange)
+      );
+
+      // Add the current slot to the list of available slots
+      if (isWithinBusinessHours && isAvailable) {
+        availableSlots.push([
+          slotStart.format("HH:mm:ss"),
+          slotEnd.format("HH:mm:ss"),
+        ]);
+      }
+
+      // Increment the current time by the length of the service
+      currentTime.add(serviceLength, "minutes");
+    }
+    console.log("avail", availableSlots);
+    res.status(200).json({ availableSlots });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error getting search results" });
+  } finally {
+    conn.release();
+  }
+};
 module.exports = {
   getTopCompanies,
   getAutoComplete,
   searchService,
+  getAvailableSlots,
 };

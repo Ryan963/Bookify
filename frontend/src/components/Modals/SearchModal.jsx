@@ -145,7 +145,7 @@ const AutocompleteModal = ({ open, onClose }) => {
 
   return (
     <Modal className={classes.modal} open={open} onClose={onClose}>
-      <div>
+      <div className="min-w-80">
         <TextField
           className={classes.searchField}
           label="Search"

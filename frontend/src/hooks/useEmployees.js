@@ -3,8 +3,11 @@ import React, { useState } from "react";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 
+// pass an empty array as dependencies if not needed
+// Note: not passing the dependencies prop might cause extra rendering
 const useEmployees = (companyId, dependencies) => {
   const [employees, setEmployees] = useState([]);
+  console.log(companyId, dependencies);
 
   useEffect(() => {
     (async () => {

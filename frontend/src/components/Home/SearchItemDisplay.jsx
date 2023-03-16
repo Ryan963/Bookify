@@ -1,6 +1,10 @@
 import React from "react";
 import ButtonPrimary from "../UI/ButtonPrimary";
-const SearchItemDisplay = ({ branches, openBookingModal }) => {
+const SearchItemDisplay = ({
+  branches,
+  openBookingModal,
+  selectBookingService,
+}) => {
   console.log(branches);
   return (
     <>
@@ -16,9 +20,9 @@ const SearchItemDisplay = ({ branches, openBookingModal }) => {
             )}
             <div className="ml-10 flex-1 mr-6">
               <h3 className="text-4xl font-bold text-orange-600">
-                {branch.companyName}
+                {branch.name}
               </h3>
-              <h3 className="text-xl font-semibold ">{branch.address}</h3>
+              <h3 className="text-xl font-semibold ">{branch.branchAddress}</h3>
               {branch.services.slice(0, 3).map((service) => (
                 <div key={service.name}>
                   <div className="flex justify-between mt-2">
@@ -28,7 +32,10 @@ const SearchItemDisplay = ({ branches, openBookingModal }) => {
                     </div>
                     <div className="w-16 h-12 my-2">
                       <button
-                        onClick={openBookingModal}
+                        onClick={() => {
+                          selectBookingService({ ...branch, service: service });
+                          openBookingModal();
+                        }}
                         className="bg-skyblue text-sm rounded-lg w-16 h-10"
                       >
                         Book
