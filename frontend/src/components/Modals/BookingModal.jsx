@@ -28,6 +28,7 @@ import { toast } from "react-toastify";
 import ButtonPrimary from "../UI/ButtonPrimary";
 import LoginModal from "./CustomerLoginModal";
 import RegisterModal from "./CustomerRegisterModal";
+import { useNavigate } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -54,6 +55,7 @@ const BookingModal = ({ company, isOpen, onClose, onSave }) => {
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
   const [selectedEmployee, setSelectedEmployee] = useState("anyone");
   const [employees, setEmployees] = useEmployees(company.id, [company]);
+  const navigate = useNavigate();
   console.log(employees);
   const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
 
@@ -113,8 +115,6 @@ const BookingModal = ({ company, isOpen, onClose, onSave }) => {
     const userEmail = localStorage.getItem("email");
     const userType = localStorage.getItem("type");
     const userExists = userEmail && userEmail.length !== 0;
-    console.log(userEmail);
-    console.log("heello", selectedDate, selectedEmployee, selectedTimeSlot);
     const isCustomer = userType && userType.toLowerCase() !== "customer";
     if (userExists && isCustomer) {
       try {
@@ -137,6 +137,9 @@ const BookingModal = ({ company, isOpen, onClose, onSave }) => {
         );
         if (res.data.success) {
           toast.success("Your appointment has been booked successfully");
+          setTimeout(() => {
+            navigate("/");
+          }, 2000);
         } else {
           toast.error("Your request could not be completed at this time");
         }

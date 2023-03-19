@@ -20,6 +20,8 @@ import Services from "./pages/employee/Services";
 import Search from "./pages/public/Search";
 import AppointmentCalendar from "./pages/employee/Calendar";
 import Company from "./pages/public/Company";
+import Profile from "./pages/customer/Profile";
+import Calendar from "./pages/customer/Calendar";
 function App() {
   const [isOpen, setIsOpen] = useState(false);
   const width = window.innerWidth;
@@ -52,7 +54,10 @@ function App() {
                     element={<CompanyRegister />}
                   />
                   {/* all customer routes goes in here */}
-                  <Route element={<PrivateCustomerRoute />}></Route>
+                  <Route element={<PrivateCustomerRoute />}>
+                    <Route path="/customer/profile" element={<Profile />} />
+                    <Route path="/customer/calendar" element={<Calendar />} />
+                  </Route>
                   {/* all employee routes goes in here */}
                   <Route element={<PrivateEmployeeRoute />}>
                     <Route path="/employees" element={<Employees />} />

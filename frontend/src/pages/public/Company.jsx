@@ -4,8 +4,15 @@ import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import CompanyMap from "../../components/Company/CompanyMap";
+import BookingModal from "../../components/Modals/BookingModal";
 // TODO: Adjust the time formats on the availablity and length so it matches AM/PM
-const ServiceCard = ({ service }) => {
+const ServiceCard = ({
+  service,
+  company,
+  branch,
+  setSelectedBookingService,
+  setOpenBookingModal,
+}) => {
   const { name, price, length } = service;
 
   return (
@@ -16,7 +23,17 @@ const ServiceCard = ({ service }) => {
       </div>
       <div>
         <p className="text-xl font-semibold">${price}</p>
-        <button className="bg-skyblue text-sm rounded-lg w-16 h-10 hover:bg-sky-600">
+        <button
+          onClick={() => {
+            setSelectedBookingService({
+              ...company,
+              ...branch,
+              service: service,
+            });
+            setOpenBookingModal(true);
+          }}
+          className="bg-skyblue text-sm rounded-lg w-16 h-10 hover:bg-sky-600"
+        >
           Book
         </button>
       </div>
@@ -26,11 +43,13 @@ const ServiceCard = ({ service }) => {
 
 const Company = () => {
   const location = useLocation();
-  const companyName = location.state.company.name;
+  const { name, branchId, address } = location.state.company;
   const [branch, setBranch] = useState({});
   const [company, setCompany] = useState({});
   const [services, setServices] = useState({});
-  console.log(companyName);
+  const [openBookingModal, setOpenBookingModal] = useState(false);
+  const [selectedBookingService, setSelectedBookingService] = useState({});
+  console.log(name, branchId, address);
   useEffect(() => {
     (async () => {
       try {
@@ -38,7 +57,8 @@ const Company = () => {
           `${process.env.REACT_APP_SERVER_URL}/company/name`,
           {
             params: {
-              name: companyName,
+              name: name,
+              branchId: branchId,
             },
           }
         );
@@ -76,7 +96,14 @@ const Company = () => {
         <div className="flex flex-col">
           {services.length > 0 &&
             services.map((service) => (
-              <ServiceCard key={service.id} service={service} />
+              <ServiceCard
+                key={service.id}
+                service={service}
+                company={company}
+                branch={branch}
+                setOpenBookingModal={setOpenBookingModal}
+                setSelectedBookingService={setSelectedBookingService}
+              />
             ))}
         </div>
       </div>
@@ -140,6 +167,11 @@ const Company = () => {
           />
         </div>
       </div>
+      <BookingModal
+        company={selectedBookingService}
+        isOpen={openBookingModal}
+        onClose={() => setOpenBookingModal(false)}
+      />
     </div>
   );
 };

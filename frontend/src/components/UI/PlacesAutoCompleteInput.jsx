@@ -31,6 +31,7 @@ const PlacesAutocompleteInput = ({ address, setAddress, setInfo }) => {
             longitude: lng,
           };
         });
+        setAddress(address);
       },
       (error) => {
         console.error(error);
