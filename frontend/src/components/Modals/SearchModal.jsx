@@ -134,7 +134,10 @@ const AutocompleteModal = ({ open, onClose }) => {
                 key={result.id}
                 onClick={() => handleBusinessClick(result)}
               >
-                <ListItemText primary={result.name} />
+                <ListItemText
+                  primary={result.name}
+                  secondary={result.address}
+                />
               </ListItem>
             ))}
           </>

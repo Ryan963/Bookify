@@ -62,7 +62,7 @@ const getAutoComplete = async (req, res) => {
 
     const businessResults = await conn.awaitQuery(
       `
-     SELECT DISTINCT C.name FROM Company C WHERE C.name LIKE ?
+     SELECT C.name, B.address, B.id as branchId FROM Company C JOIN Branch B on B.companyId = C.id WHERE C.name LIKE ?
     `,
       [`%${keyword}%`]
     );
@@ -131,7 +131,7 @@ const searchService = async (req, res) => {
       }
 
       const servicesQuery =
-        "SELECT CS.id AS id, CS.price AS price, CS.length AS length, S.name AS name, S.description AS description FROM CompanyService CS JOIN Service S ON S.id = CS.serviceId WHERE CS.companyId = ?;";
+        "SELECT S.id AS id, CS.price AS price, CS.length AS length, S.name AS name, S.description AS description FROM CompanyService CS JOIN Service S ON S.id = CS.serviceId WHERE CS.companyId = ?;";
       const services = await conn.awaitQuery(servicesQuery, [results[i].id]);
       results[i] = {
         ...results[i],
@@ -164,7 +164,7 @@ const getAvailableSlots = async (req, res) => {
 
     // Get all the booked slots for the given date and branch
     const selDate = moment(selectedDate).toISOString().slice(0, 10);
-    console.log(selDate);
+    console.log("seldate", selDate);
     let bookedSlots = [];
     if (employeeId) {
       bookedSlots = await conn.awaitQuery(
@@ -177,7 +177,7 @@ const getAvailableSlots = async (req, res) => {
         [branchId, selDate]
       );
     }
-    console.log(bookedSlots);
+    console.log("booked slots", bookedSlots);
 
     // Convert the booked slots to an array of moment ranges
     const bookedRanges = bookedSlots.map((slot) => {
@@ -193,7 +193,6 @@ const getAvailableSlots = async (req, res) => {
       );
       return moment.range(start, end);
     });
-    console.log(bookedRanges);
 
     // Determine the start and end times for the given date based on the company's business hours
     const dayOfWeek = moment(selDate).day();
@@ -209,25 +208,17 @@ const getAvailableSlots = async (req, res) => {
       "YYYY-MM-DD HH:mm:ss",
       "UTC"
     );
-
+    console.log("hours", startTime, endTime);
     // Generate all the available slots for the given date and branch
     const serviceLength = moment.duration(service.length).as("minutes");
     const availableSlots = [];
     let currentTime = startTime.clone();
     while (currentTime.isBefore(endTime)) {
       // Check if the current time falls within the business hours
-      const currentDayOfWeek = moment.weekdays(dayOfWeek).toLowerCase();
-      const currentStart = moment.utc(
-        company[`${currentDayOfWeek}Start`],
-        "HH:mm:ss"
-      );
-      const currentEnd = moment.utc(
-        company[`${currentDayOfWeek}End`],
-        "HH:mm:ss"
-      );
+
       const isWithinBusinessHours = currentTime.isBetween(
-        currentStart,
-        currentEnd,
+        startTime,
+        endTime,
         null,
         "[]"
       );

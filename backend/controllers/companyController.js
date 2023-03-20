@@ -134,37 +134,30 @@ const getnotApprovedCompanies = async (req, res) => {
 const getCompanyByName = async (req, res) => {
   try {
     const connection = await db.awaitGetConnection();
-    const { name, longitude, latitude } = req.query;
+    const { name, branchId } = req.query;
     connection.on(`error`, (err) => {
       console.error(`Connection error ${err.code}`);
     });
-    const userLocation = { latitude, longitude };
+
     const query = "SELECT * FROM Company WHERE name = ?";
     const companyresult = await connection.awaitQuery(query, [name]);
     const company = companyresult[0];
     const base64Image = company.homePic.toString();
     company.homePic = base64Image;
     const branchesQuery =
-      "SELECT * FROM Branch B JOIN Company C on C.id = B.companyId WHERE C.name = ?";
-    const branches = await connection.awaitQuery(branchesQuery, [name]);
-    // branches.sort((a, b) => {
-    //   const distanceA = calculateDistance(userLocation, {
-    //     latitude: parseFloat(a.latitude),
-    //     longitude: parseFloat(a.longiude),
-    //   });
-    //   const distanceB = calculateDistance(userLocation, {
-    //     latitude: parseFloat(b.latitude),
-    //     longitude: parseFloat(b.longiude),
-    //   });
-    //   return distanceA - distanceB;
-    // });
+      "SELECT * FROM Branch B JOIN Company C on C.id = B.companyId WHERE C.name = ? and B.id = ?";
+    const [branch] = await connection.awaitQuery(branchesQuery, [
+      name,
+      branchId,
+    ]);
+
     const servicesQuery =
       "SELECT CS.id as id, CS.price as price, CS.length as length, S.name as name, S.description as description FROM CompanyService CS JOIN Service S on CS.serviceId = S.id JOIN Company C ON C.id = CS.companyId WHERE C.name = ?";
     const services = await connection.awaitQuery(servicesQuery, [name]);
     connection.release(); // releases it
     res.status(200).json({
       company: company,
-      branch: branches.length > 0 ? branches[0] : [],
+      branch: branch ? branch : {},
       services: services,
     });
   } catch (error) {

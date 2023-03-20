@@ -1,6 +1,6 @@
 import React from "react";
 
-const InputField = ({ onChange, type, name, placeholder, value }) => {
+const InputField = ({ onChange, type, name, placeholder, value, disabled }) => {
   return (
     <input
       style={{
@@ -18,6 +18,7 @@ const InputField = ({ onChange, type, name, placeholder, value }) => {
       name={name}
       value={value}
       placeholder={placeholder}
+      disabled={disabled ? disabled : false}
     />
   );
 };

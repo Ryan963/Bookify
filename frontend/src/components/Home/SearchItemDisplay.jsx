@@ -1,11 +1,12 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import ButtonPrimary from "../UI/ButtonPrimary";
 const SearchItemDisplay = ({
   branches,
   openBookingModal,
   selectBookingService,
 }) => {
-  console.log(branches);
+  const navigate = useNavigate();
   return (
     <>
       {branches.map((branch) => (
@@ -19,7 +20,12 @@ const SearchItemDisplay = ({
               />
             )}
             <div className="ml-10 flex-1 mr-6">
-              <h3 className="text-4xl font-bold text-orange-600">
+              <h3
+                className="text-4xl font-bold text-orange-600 cursor-pointer"
+                onClick={() => {
+                  navigate("/company", { state: { company: branch } });
+                }}
+              >
                 {branch.name}
               </h3>
               <h3 className="text-xl font-semibold ">{branch.branchAddress}</h3>
