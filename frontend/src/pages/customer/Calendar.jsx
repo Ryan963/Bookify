@@ -70,6 +70,8 @@ function AppointmentCalendar() {
     return new Date(date[0], date[1] - 1, date[2], time[0], time[1], time[2]);
   };
 
+  const today = new Date();
+
   return (
     <div>
       <Calendar
@@ -86,6 +88,12 @@ function AppointmentCalendar() {
         defaultView="month"
         className={classes.calendar}
         popup={true}
+        min={
+          new Date(today.getFullYear(), today.getMonth(), today.getDate(), 8)
+        }
+        max={
+          new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23)
+        }
         components={{
           event: Event,
           timeSlotWrapper: (props) => (
