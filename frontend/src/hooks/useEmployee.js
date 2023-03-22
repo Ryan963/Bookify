@@ -21,10 +21,12 @@ const useEmployee = () => {
           params: {
             employeeEmail: userEmail,
           },
+          
         })
 
         .then((res) => {
           setEmployee(res.data.employee);
+          
         })
         .catch((error) => {
           console.log(error);

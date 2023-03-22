@@ -17,6 +17,7 @@ import SideBar from "./components/UI/SideBar";
 import Branches from "./pages/employee/Branches";
 import Employees from "./pages/employee/Employees";
 import Services from "./pages/employee/Services";
+import EmployeeHome from "./pages/employee/EmployeeHome";
 function App() {
   const [isOpen, setIsOpen] = useState(false);
   const width = window.innerWidth;
@@ -53,6 +54,7 @@ function App() {
                     <Route path="/employees" element={<Employees />} />
                     <Route path="/branches" element={<Branches />} />
                     <Route path="/services" element={<Services />} />
+                    <Route path="/employee/home" element={<EmployeeHome />} />
                   </Route>
                   {/* all admin routes goes in here */}
                   <Route element={<PrivateAdminRoute />}>
