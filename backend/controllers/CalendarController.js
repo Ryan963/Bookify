@@ -1,59 +1,10 @@
-//Add the calendar from the customer controller here
-//In the const email you are passing the manager thing as well
-//make an if else for the employee or manager
+//const bcrypt = require("bcryptjs");
+const db = require("../config/db");
+//const jwt = require("jsonwebtoken");
 
-/*
-const getCalendar = async (req, res) => {
-  try {
-    const data = [
-      {
-        serviceName: "Haircut",
-        employeeName: "Filip",
-        startTime: "12:00:00",
-        endTime: "12:30:00",
-        date: "2023-02-22",
-      },
-      {
-        serviceName: "Haircut",
-        employeeName: "john",
-        startTime: "12:00:00",
-        endTime: "12:30:00",
-        date: "2023-02-23",
-      },
-      {
-        serviceName: "Haircut",
-        employeeName: "john",
-        startTime: "12:00:00",
-        endTime: "12:30:00",
-        date: "2023-02-13",
-      },
-      {
-        serviceName: "Haircut",
-        employeeName: "john",
-        startTime: "12:00:00",
-        endTime: "12:30:00",
-        date: "2023-02-01",
-      },
-    ];
-
-    const convertedData = data.map((item, index) => {
-      const startTime = new Date(`${item.date}T${item.startTime}`);
-      const endTime = new Date(`${item.date}T${item.endTime}`);
-
-      return {
-        id: index + 1,
-        title: `${item.serviceName} With ${item.employeeName}`,
-        start: startTime,
-        end: endTime,
-        employee: item.employeeName,
-      };
-    });
-    res.status(200).json({ data: convertedData });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "SERVER ERROR" });
-  }
-};*/
+const Moment = require("moment-timezone");
+const MomentRange = require("moment-range");
+const moment = MomentRange.extendMoment(Moment);
 
 const getAppointmentsByEmpOrManager = async (req, res) => {
   const conn = await db.awaitGetConnection();
@@ -62,13 +13,16 @@ const getAppointmentsByEmpOrManager = async (req, res) => {
     conn.on(`error`, (err) => {
       console.error(`Connection error ${err.code}`);
     });
+    let query;
+    const [employee] = await conn.awaitQuery("SELECT * FROM Employee WHERE email = ?", [email]);
     if (isManager === true) {
-      const query = "SELECT B.id as id, B.customerId as customerId, E.firstname as employeeFirstname, E.lastname as employeeLastname, S.name as serviceName, B.date as date, B.startTime as startTime, B.endTime as endTime FROM Bookings B JOIN Customer C ON C.id = B.customerId JOIN Employee E ON E.id = B.employeeId JOIN Service S ON S.id = B.serviceId WHERE E.email = ?";
+      query = "SELECT B.id as id, B.customerId as customerId, E.firstname as employeeFirstname, E.lastname as employeeLastname, S.name as serviceName, B.date as date, B.startTime as startTime, B.endTime as endTime FROM Bookings B JOIN Customer C ON C.id = B.customerId JOIN Employee E ON E.id = B.employeeId JOIN Service S ON S.id = B.serviceId WHERE B.branchId = ?";
     } else {
-      const query = "SELECT B.id as id, B.customerId as customerId, E.firstname as employeeFirstname, E.lastname as employeeLastname, S.name as serviceName, B.date as date, B.startTime as startTime, B.endTime as endTime FROM Bookings B JOIN Customer C ON C.id = B.customerId JOIN Employee E ON E.id = B.employeeId JOIN Service S ON S.id = B.serviceId WHERE E.email = ?";
+      console.log("HIT THE ELSE");
+      query = "SELECT B.id as id, B.customerId as customerId, E.firstname as employeeFirstname, E.lastname as employeeLastname, S.name as serviceName, B.date as date, B.startTime as startTime, B.endTime as endTime FROM Bookings B JOIN Customer C ON C.id = B.customerId JOIN Employee E ON E.id = B.employeeId JOIN Service S ON S.id = B.serviceId WHERE E.email = ?";
     }
-
     const bookings = await conn.awaitQuery(query, [email]);
+    console.log(bookings);
     const mappedBookings = bookings.map((item, index) => {
       // const startTime = new Date(`${item.date}T${item.startTime}`);
       // const endTime = new Date(`${item.date}T${item.endTime}`);

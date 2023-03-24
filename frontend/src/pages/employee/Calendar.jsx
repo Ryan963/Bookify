@@ -46,7 +46,7 @@ function AppointmentCalendar() {
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_SERVER_URL}/`, {
+      .get(`${process.env.REACT_APP_SERVER_URL}/calendar/`, {
         params: {
           email: localStorage.getItem("email"),
           isManager: localStorage.getItem("type") === "employeeManager" ? true : false,
