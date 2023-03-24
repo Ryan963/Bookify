@@ -53,4 +53,39 @@ const addBooking = async (req, res) => {
   }
 };
 
-module.exports = { addBooking };
+const getBookingsByEmployee = async (req, res) => {
+  try {
+    const { employeeId, date } = req.query;
+
+    const connection = await db.awaitGetConnection();
+    connection.on("error", (err) => {
+      console.error(`Connection error ${err.code}`);
+    });
+
+    const query =
+      "SELECT B.id as id, C.firstname as customerFirstname, C.lastname as customerLastname, C.number as number, E.firstname as employeeFirstname, E.lastname as employeeLastname, S.name as serviceName, B.date as date, B.startTime as startTime, B.endTime as endTime FROM Bookings B JOIN Customer C ON C.id = B.customerId JOIN Employee E ON E.id = B.employeeId JOIN Service S ON S.id = B.serviceId WHERE E.id = ? AND B.date = ?";
+    const bookings = await connection.awaitQuery(query, [
+      employeeId,
+      date.toString(),
+    ]);
+    console.log(bookings);
+    console.log(
+      `Found ${bookings.length} bookings for employee ${employeeId} on ${date}`
+    );
+
+    connection.release();
+
+    return res.status(200).json({
+      success: true,
+      bookings: bookings,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: "Could not retrieve bookings",
+    });
+  }
+};
+
+module.exports = { addBooking, getBookingsByEmployee };

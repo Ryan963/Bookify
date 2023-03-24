@@ -33,8 +33,14 @@ const SideBar = ({ isOpen, setIsOpen }) => {
       } absolute top-0 left-0  w-64 bg-dark z-10 h-screen`}
     >
       <Menu>
-        {userType === "employeeManager" && (
+        {userType === "employee" && (
           <>
+            <MenuItem
+              component={<Link to="/calendar"></Link>}
+              className="hover:text-black"
+            >
+              Appointments Calendar
+            </MenuItem>
             <MenuItem
               component={<Link to="/employees"></Link>}
               className="hover:text-black"
