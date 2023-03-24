@@ -45,7 +45,12 @@ const AddCompanyServiceModal = ({
 }) => {
   const classes = useStyles();
 
-  const [services, setServies] = useServices();
+  const [services, setServices] = useServices();
+  const [addNew, setAddNew] = useState(false);
+  const [serviceInfo, setServiceInfo] = useState({
+    name: "",
+    description: "",
+  });
   const [companyServiceInfo, setCompanyServiceInfo] = useState({
     serviceId: null,
     hourslength: "",
@@ -127,6 +132,28 @@ const AddCompanyServiceModal = ({
       toast.error("Server Error, Something went wrong!");
     }
   };
+
+  const handleServiceInfoChange = (e) => {
+    setServiceInfo({ ...serviceInfo, [e.target.name]: e.target.value });
+  };
+
+  const handleAddingService = async () => {
+    try {
+      const res = await axios.post(
+        `${process.env.REACT_APP_SERVER_URL}/service`,
+        {
+          service: serviceInfo,
+        }
+      );
+      if (res.data.success) {
+        setServices([...services, { id: res.data.insertId, serviceInfo }]);
+        setAddNew(false);
+      }
+    } catch (error) {
+      toast.error("Could not add a new Service");
+      console.log(error);
+    }
+  };
   return (
     <Modal
       aria-labelledby="transition-modal-title"
@@ -146,61 +173,98 @@ const AddCompanyServiceModal = ({
             <span>Add a New Service</span>
           </div>
           <form className={classes.form} noValidate>
-            <label id="employee-select-label" className="text-white  ">
-              Select a Service
-            </label>
-            <Select
-              style={{
-                width: "100%",
-              }}
-              labelId="service-select-label"
-              value={companyServiceInfo.serviceId}
-              onChange={(e) =>
-                setCompanyServiceInfo({
-                  ...companyServiceInfo,
-                  serviceId: Number(e.target.value),
-                })
-              }
-            >
-              {services
-                .filter((service) => !currentServicesIds.includes(service.id))
-                .map((service) => (
-                  <MenuItem key={service.id} value={service.id}>
-                    {service.name}
-                  </MenuItem>
-                ))}
-            </Select>
+            {addNew ? (
+              <div>
+                <InputField
+                  name="name"
+                  placeholder="Name"
+                  type="text"
+                  value={serviceInfo.name}
+                  onChange={handleServiceInfoChange}
+                />
+                <textarea
+                  className="w-full mt-6 border-skyblue border text-black"
+                  name="description"
+                  placeholder="Description"
+                  value={serviceInfo.description}
+                  onChange={handleServiceInfoChange}
+                />
+                <div className="w-full flex justify-end mt-8">
+                  <ButtonSecondary onClick={handleAddingService}>
+                    Add Service
+                  </ButtonSecondary>
+                </div>
+              </div>
+            ) : (
+              <>
+                <label id="employee-select-label" className="text-white  ">
+                  Select a Service
+                </label>
+                <Select
+                  style={{
+                    width: "100%",
+                  }}
+                  labelId="service-select-label"
+                  value={companyServiceInfo.serviceId}
+                  onChange={(e) =>
+                    setCompanyServiceInfo({
+                      ...companyServiceInfo,
+                      serviceId: Number(e.target.value),
+                    })
+                  }
+                >
+                  {services
+                    .filter(
+                      (service) => !currentServicesIds.includes(service.id)
+                    )
+                    .map((service) => (
+                      <MenuItem key={service.id} value={service.id}>
+                        {service.name}
+                      </MenuItem>
+                    ))}
+                </Select>
 
-            <InputField
-              name="price"
-              placeholder="Price"
-              type="number"
-              value={companyServiceInfo.price}
-              onChange={handleChange}
-            />
-            <InputField
-              name="hourslength"
-              placeholder="Hours Length"
-              type="number"
-              value={companyServiceInfo.hourslength}
-              onChange={handleChange}
-            />
-            <InputField
-              name="minuteslength"
-              placeholder="Minutes Length"
-              type="number"
-              value={companyServiceInfo.minuteslength}
-              onChange={handleChange}
-            />
+                <InputField
+                  name="price"
+                  placeholder="Price"
+                  type="number"
+                  value={companyServiceInfo.price}
+                  onChange={handleChange}
+                />
+                <InputField
+                  name="hourslength"
+                  placeholder="Hours Length"
+                  type="number"
+                  value={companyServiceInfo.hourslength}
+                  onChange={handleChange}
+                />
+                <InputField
+                  name="minuteslength"
+                  placeholder="Minutes Length"
+                  type="number"
+                  value={companyServiceInfo.minuteslength}
+                  onChange={handleChange}
+                />
+                <div className="mt-4">
+                  Your Service Doesn't exist here?{" "}
+                  <span
+                    onClick={() => setAddNew(true)}
+                    className="underline cursor-pointer text-skyblue"
+                  >
+                    add new!
+                  </span>
+                </div>
 
-            <div className="w-full flex justify-end mt-8">
-              <ButtonSecondary
-                disabled={disabled}
-                onClick={handleAddingCompanyService}
-              >
-                Add Service
-              </ButtonSecondary>
-            </div>
+                <div className="w-full flex justify-end mt-8">
+                  <ButtonSecondary
+                    disabled={disabled}
+                    onClick={handleAddingCompanyService}
+                  >
+                    Add Service
+                  </ButtonSecondary>
+                </div>
+              </>
+            )}
           </form>
         </div>
       </Fade>
