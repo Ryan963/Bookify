@@ -58,10 +58,7 @@ const registerCustomer = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     customer.password = await bcrypt.hash(customer.password, salt);
 
-    const registeredCustomer = await connection.query(
-      "INSERT INTO Customer SET ?",
-      customer
-    );
+    const registeredCustomer = await connection.query("INSERT INTO Customer SET ?", customer);
 
     res.status(200).json({
       success: true,
@@ -83,25 +80,16 @@ const getAppointmentsByCustomer = async (req, res) => {
     conn.on(`error`, (err) => {
       console.error(`Connection error ${err.code}`);
     });
-    const query =
-      "SELECT B.id as id, B.customerId as customerId, E.firstname as employeeFirstname, E.lastname as employeeLastname, S.name as serviceName, B.date as date, B.startTime as startTime, B.endTime as endTime FROM Bookings B JOIN Customer C ON C.id = B.customerId JOIN Employee E ON E.id = B.employeeId JOIN Service S ON S.id = B.serviceId WHERE C.email = ?";
+    const query = "SELECT B.id as id, B.customerId as customerId, E.firstname as employeeFirstname, E.lastname as employeeLastname, S.name as serviceName, B.date as date, B.startTime as startTime, B.endTime as endTime FROM Bookings B JOIN Customer C ON C.id = B.customerId JOIN Employee E ON E.id = B.employeeId JOIN Service S ON S.id = B.serviceId WHERE C.email = ?";
 
     const bookings = await conn.awaitQuery(query, [email]);
     const mappedBookings = bookings.map((item, index) => {
       // const startTime = new Date(`${item.date}T${item.startTime}`);
       // const endTime = new Date(`${item.date}T${item.endTime}`);
       const date = moment(item.date).toISOString().slice(0, 10);
-      const startDate = moment.tz(
-        `${date} ${item.startTime}`,
-        "YYYY-MM-DD HH:mm:ss",
-        "UTC"
-      );
+      const startDate = moment.tz(`${date} ${item.startTime}`, "YYYY-MM-DD HH:mm:ss", "UTC");
 
-      const endDate = moment.tz(
-        `${date} ${item.endTime}`,
-        "YYYY-MM-DD HH:mm:ss",
-        "UTC"
-      );
+      const endDate = moment.tz(`${date} ${item.endTime}`, "YYYY-MM-DD HH:mm:ss", "UTC");
 
       return {
         id: item.id,
@@ -131,9 +119,7 @@ const getCustomerInfo = async (req, res) => {
     const query = "SELECT * FROM Customer WHERE email = ?";
     const [customer] = await conn.awaitQuery(query, [email]);
     if (!customer) {
-      res
-        .status(400)
-        .json({ message: "Could not find a customer with this email" });
+      res.status(400).json({ message: "Could not find a customer with this email" });
     } else {
       res.status(200).json({ success: true, customer: customer });
     }
@@ -150,19 +136,7 @@ const updateCustomerInfo = async (req, res) => {
       console.error(`Connection error ${err.code}`);
     });
     const { customer } = req.body;
-    const result = await conn.awaitQuery(
-      "UPDATE Customer SET firstname = ?, lastname = ?, address = ?, postalcode = ?, longitude = ?, latitude = ?, number = ? WHERE id = ?",
-      [
-        customer.firstname,
-        customer.lastname,
-        customer.address,
-        customer.postalcode,
-        customer.longitude,
-        customer.latitude,
-        customer.number,
-        customer.id,
-      ]
-    );
+    const result = await conn.awaitQuery("UPDATE Customer SET firstname = ?, lastname = ?, address = ?, postalcode = ?, longitude = ?, latitude = ?, number = ? WHERE id = ?", [customer.firstname, customer.lastname, customer.address, customer.postalcode, customer.longitude, customer.latitude, customer.number, customer.id]);
     res.status(200).json({
       success: true,
       message: "Your info has been updated successfully",

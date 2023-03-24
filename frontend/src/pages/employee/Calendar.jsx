@@ -32,7 +32,7 @@ function Event({ event }) {
 function AppointmentCalendar() {
   const classes = useStyles();
   const [bookingData, setBookingData] = useState([]);
-  //const data = [{ serviceName: "Haircut", employeeName: "Filip", startTime: "12:00:00", endTime: "12:30:00", date: "2023-02-22" }];
+
   const events = [
     {
       id: 1,
@@ -45,18 +45,33 @@ function AppointmentCalendar() {
   console.log(events);
 
   useEffect(() => {
-    // here you will need to write the get request to get your data
-    // you will need to set the bookingData state to the data after you manipulate it
-    // to match the data above
-    // to set the booking data do this setBookingData(Your Final Data Goes here)
     axios
-      .get(`${process.env.REACT_APP_SERVER_URL}/calendar/`)
+      .get(`${process.env.REACT_APP_SERVER_URL}/`, {
+        params: {
+          email: localStorage.getItem("email"),
+          isManager: localStorage.getItem("type") === "employeeManager" ? true : false,
+        },
+      })
       .then((response) => {
-        const initalData = response.data.data;
+        const initalData = response.data.bookings;
         console.log(initalData);
         setBookingData(initalData);
       });
   }, []);
+
+  const parseDate = (fullDate) => {
+    const date = fullDate
+      .slice(0, 10)
+      .split("-")
+      .map((date) => Number(date));
+    const time = fullDate
+      .slice(11, 19)
+      .split(":")
+      .map((time) => Number(time));
+    return new Date(date[0], date[1] - 1, date[2], time[0], time[1], time[2]);
+  };
+
+  const today = new Date();
 
   return (
     <div>
@@ -64,16 +79,18 @@ function AppointmentCalendar() {
         localizer={localizer}
         events={bookingData}
         startAccessor={(event) => {
-          return new Date(event.start);
+          return parseDate(event.start);
         }}
         endAccessor={(event) => {
-          return new Date(event.end);
+          return parseDate(event.end);
         }}
         views={["month", "week"]}
         step={30}
         defaultView="month"
         className={classes.calendar}
         popup={true}
+        min={new Date(today.getFullYear(), today.getMonth(), today.getDate(), 8)}
+        max={new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23)}
         components={{
           event: Event,
           timeSlotWrapper: (props) => (
