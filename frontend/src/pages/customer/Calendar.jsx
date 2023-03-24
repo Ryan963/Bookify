@@ -49,6 +49,7 @@ function AppointmentCalendar() {
       .get(`${process.env.REACT_APP_SERVER_URL}/customer/appointments/`, {
         params: {
           email: localStorage.getItem("email"),
+          //write the line that ryan gave you the true or false one
         },
       })
       .then((response) => {
@@ -88,12 +89,8 @@ function AppointmentCalendar() {
         defaultView="month"
         className={classes.calendar}
         popup={true}
-        min={
-          new Date(today.getFullYear(), today.getMonth(), today.getDate(), 8)
-        }
-        max={
-          new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23)
-        }
+        min={new Date(today.getFullYear(), today.getMonth(), today.getDate(), 8)}
+        max={new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23)}
         components={{
           event: Event,
           timeSlotWrapper: (props) => (
