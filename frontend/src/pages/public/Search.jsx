@@ -67,7 +67,6 @@ const Search = () => {
           }
         );
         if (res.data.success) {
-          console.log(res.data);
           setResults(res.data.results);
         }
       } catch (error) {
@@ -76,6 +75,8 @@ const Search = () => {
       }
     })();
   }, []);
+
+  console.log("results", results);
 
   function deg2rad(deg) {
     return deg * (Math.PI / 180);
@@ -100,13 +101,15 @@ const Search = () => {
     const serviceFound = result.services.find((s) => s.name === service.name);
     console.log(serviceFound.price, filters.maxPrice);
     if (serviceFound.price !== null) {
-      console.log();
       if (
         filters.maxPrice > 0 &&
         serviceFound.price > parseFloat(filters.maxPrice)
       ) {
         return false;
       }
+    }
+    if (!result.branchLatitude || !result.branchLongitude) {
+      return true;
     }
     return isLocationWithinRadius(
       userLocation.latitude,
@@ -116,66 +119,6 @@ const Search = () => {
       result.branchLongitude
     );
   });
-
-  const mockData = {
-    company: {
-      id: 1,
-      name: "ABC Salon",
-      logoUrl: "https://example.com/logo.png",
-      services: [
-        {
-          id: 1,
-          name: "Haircut",
-          description: "A basic haircut",
-          price: 50,
-          duration: 30,
-        },
-        {
-          id: 2,
-          name: "Coloring",
-          description: "A basic hair coloring",
-          price: 100,
-          duration: 60,
-        },
-        {
-          id: 3,
-          name: "Manicure",
-          description: "A basic manicure",
-          price: 30,
-          duration: 30,
-        },
-      ],
-    },
-    branch: {
-      id: 1,
-      name: "Main Branch",
-      address: "1234 Main St, Anytown USA",
-      phone: "555-1234",
-      email: "mainbranch@abcsalon.com",
-      workDays: [
-        { dayOfWeek: "MON", startTime: "09:00", endTime: "18:00" },
-        { dayOfWeek: "TUE", startTime: "09:00", endTime: "18:00" },
-        { dayOfWeek: "WED", startTime: "09:00", endTime: "18:00" },
-        { dayOfWeek: "THU", startTime: "09:00", endTime: "20:00" },
-        { dayOfWeek: "FRI", startTime: "09:00", endTime: "20:00" },
-        { dayOfWeek: "SAT", startTime: "10:00", endTime: "16:00" },
-        { dayOfWeek: "SUN", startTime: "10:00", endTime: "16:00" },
-      ],
-      employees: [
-        { id: 1, name: "John Doe", title: "Stylist" },
-        { id: 2, name: "Jane Smith", title: "Stylist" },
-        { id: 3, name: "Bob Johnson", title: "Nail Technician" },
-      ],
-    },
-    service: {
-      id: 1,
-      name: "Haircut",
-      description: "A basic haircut",
-      price: 50,
-      duration: 30,
-      employeeTypes: ["Stylist"],
-    },
-  };
 
   return (
     <>

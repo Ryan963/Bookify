@@ -78,6 +78,7 @@ const AddEmployeeModal = ({ open, setOpen, branches, employee }) => {
     setDisabled(true);
     console.log(userInfo);
     for (let info in userInfo) {
+      console.log(info);
       if (
         userInfo[info] === null ||
         (typeof userInfo[info] == String && userInfo[info].length === 0)

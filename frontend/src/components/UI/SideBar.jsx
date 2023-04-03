@@ -17,6 +17,8 @@ const SideBar = ({ isOpen, setIsOpen }) => {
   useEffect(() => {
     collapseSidebar(!isOpen);
   }, [isOpen]);
+  const isManager =
+    localStorage.getItem("type") === "employeeManager" ? true : false;
 
   return (
     <Sidebar
@@ -33,10 +35,14 @@ const SideBar = ({ isOpen, setIsOpen }) => {
       } absolute top-0 left-0  w-64 bg-dark z-10 h-screen`}
     >
       <Menu>
-        {userType === "employee" && (
+        {userType?.startsWith("employee") && (
           <>
             <MenuItem
-              component={<Link to="/calendar"></Link>}
+              component={
+                <Link
+                  to={isManager ? "/employee/calendar" : "/calendar"}
+                ></Link>
+              }
               className="hover:text-black"
             >
               Appointments Calendar

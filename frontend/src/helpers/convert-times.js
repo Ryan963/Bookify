@@ -7,7 +7,9 @@ export function convertTo12HourTime(timeStr) {
 
 export function convertTime(timeStr) {
   // Split the string into hours, minutes, and seconds
-  const [hours, minutes, seconds] = timeStr.split(":").map(Number);
+  const [hours, minutes, seconds] = timeStr
+    .split(":")
+    .map((num) => Number(num));
 
   // Calculate the total number of minutes
   const totalMinutes = hours * 60 + minutes;
@@ -18,7 +20,7 @@ export function convertTime(timeStr) {
   }
 
   // Determine the hour and minute strings to return
-  const hourStr = hours > 0 ? `${hours} hour${hours > 1 ? "s" : ""} and ` : "";
+  const hourStr = hours > 0 ? `${hours} hour${hours > 1 ? "s" : ""} ` : "";
   const minuteStr =
     minutes > 0 ? `${minutes} minute${minutes > 1 ? "s" : ""}` : "";
 
