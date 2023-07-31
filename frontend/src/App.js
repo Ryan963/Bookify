@@ -23,6 +23,7 @@ import Company from "./pages/public/Company";
 import Profile from "./pages/customer/Profile";
 import Calendar from "./pages/customer/Calendar";
 import EmployeeHome from "./pages/employee/Home";
+import ManagerCalendar from "./pages/employee/ManagerCalendar";
 function App() {
   const [isOpen, setIsOpen] = useState(false);
   const width = window.innerWidth;
@@ -65,6 +66,10 @@ function App() {
                     <Route path="/branches" element={<Branches />} />
                     <Route path="/services" element={<Services />} />
                     <Route path="/calendar" element={<AppointmentCalendar />} />
+                    <Route
+                      path="employee/calendar"
+                      element={<ManagerCalendar />}
+                    />
                     <Route path="/employee/home" element={<EmployeeHome />} />
                   </Route>
                   {/* all admin routes goes in here */}

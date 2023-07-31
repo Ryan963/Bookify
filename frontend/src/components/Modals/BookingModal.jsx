@@ -56,7 +56,7 @@ const BookingModal = ({ company, isOpen, onClose, onSave }) => {
   const [selectedEmployee, setSelectedEmployee] = useState("anyone");
   const [employees, setEmployees] = useEmployees(company.id, [company]);
   const navigate = useNavigate();
-  console.log(employees);
+
   const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
 
   const handleDateChange = (date) => {
@@ -100,7 +100,6 @@ const BookingModal = ({ company, isOpen, onClose, onSave }) => {
               },
             }
           );
-          console.log(res.data);
           setAvailableTimeSlots(res.data.availableSlots);
         } catch (error) {
           toast.error("Could not retrieve the time slots");
@@ -108,7 +107,6 @@ const BookingModal = ({ company, isOpen, onClose, onSave }) => {
         }
       }
     })();
-    console.log(company);
   }, [company, selectedEmployee, selectedDate]);
 
   const bookAppointment = async () => {
@@ -151,7 +149,6 @@ const BookingModal = ({ company, isOpen, onClose, onSave }) => {
       setOpenLoginModal(true);
     }
   };
-
   return (
     <Dialog open={isOpen} onClose={handleCancel} fullWidth maxWidth="sm">
       {company.service && (

@@ -4,14 +4,16 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import TitleText from "../../components/UI/TitleText";
 import { useNavigate } from "react-router-dom";
+import { convertTo12HourTime } from "../../helpers/convert-times";
+import { Grid } from "@mui/material";
 
 const EmployeeHome = () => {
   const [employee, setEmployee] = useEmployee();
-  const [matchingData, setMatchingData] = useState([]);
   const Navigate = useNavigate();
   const [bookings, setBookings] = useState([]);
+  const isManager =
+    localStorage.getItem("type") === "employeeManager" ? true : false;
   console.log(employee);
-
   useEffect(() => {
     const today = new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
       .toISOString()
@@ -26,7 +28,7 @@ const EmployeeHome = () => {
       .then((res) => {
         if (res.data.success) {
           console.log(res.data);
-          setMatchingData(res.data.bookings);
+          setBookings(res.data.bookings);
         } else {
           console.log(res.data.message);
         }
@@ -42,57 +44,75 @@ const EmployeeHome = () => {
 
       <div className="mr-auto">
         <div>
-          <div className="flex flex-row w-full mt-10 p-40 mr-10 justify-between ml-auto">
+          <div className="flex flex-row w-full mt-10 px-32 py-20 mr-10 justify-between ml-auto">
             <div className="w-full md:w-2/3 mx-2">
               <>
-                {matchingData ? (
-                  matchingData.length > 0 ? (
-                    <div className="border  border-skyblue">
-                      <div className="flex flex-row font-bold text-lg bg-black border-skyblue">
-                        <div className="w-1/2 p-2 border border-skyblue">
-                          Name
-                        </div>
-                        <div className="w-1/3 p-2 border border-skyblue">
-                          Service
-                        </div>
-                        <div className="w-1/2 p-2 border border-skyblue">
-                          Contact
-                        </div>
-                        <div className="w-1/3 p-2 border border-skyblue">
-                          Start
-                        </div>
-                        <div className="w-1/3 p-2 border border-skyblue">
-                          End{" "}
-                        </div>
-                      </div>
+                {bookings.length > 0 ? (
+                  <>
+                    <div className="mb-8">
+                      <TitleText>Today's Appoitnments</TitleText>
+                    </div>
+                    <Grid
+                      container
+                      spacing={2}
+                      className="pb-3 pt-1 mb-12  items-center rounded-3xl border bg-secondary text-grey content-center"
+                    >
+                      <Grid item xs={2}>
+                        <div>Customer Name</div>
+                      </Grid>
+                      <Grid item xs={2}>
+                        <div>Service Name</div>
+                      </Grid>
+                      <Grid item xs={2}>
+                        <div>Date</div>
+                      </Grid>
 
-                      {matchingData.map((item) => (
-                        <div key={item.name} className="flex flex-row">
-                          <div className="w-1/2 p-2 border-r border-b border-skyblue">
-                            {`${item.customerFirstname} ${item.customerLastname}`}
-                          </div>
-                          <div className="w-1/3 p-2 border-r border-b border-skyblue">
-                            {item.serviceName}
-                          </div>
-                          <div className="w-1/2 p-2 border-r border-b border-skyblue">
-                            {item.number}
-                          </div>
-                          <div className="w-1/3 p-2 border-r border-b border-skyblue">
-                            {item.startTime}
-                          </div>
-                          <div className="w-1/3 p-2 border-r border-b border-skyblue">
-                            {item.endTime}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="text-4xl mt-6 mr-10 text-center">
-                      No appointments today
-                    </div>
-                  )
+                      <Grid item xs={2}>
+                        <div>Customer Number</div>
+                      </Grid>
+                      <Grid item xs={2}>
+                        Start Time
+                      </Grid>
+                      <Grid item xs={2}>
+                        End Time
+                      </Grid>
+                    </Grid>
+                    {bookings.map((booking, index) => (
+                      <>
+                        <Grid
+                          key={index}
+                          container
+                          spacing={2}
+                          className="mt-8 pb-3 pt-1 mb-6  items-center rounded-3xl  bg-secondary text-grey content-center"
+                        >
+                          <Grid item xs={2}>
+                            <div>
+                              {booking.customerFirstname}{" "}
+                              {booking.customerLastname}
+                            </div>
+                          </Grid>
+                          <Grid item xs={2}>
+                            <div>{booking.serviceName}</div>
+                          </Grid>
+                          <Grid item xs={2}>
+                            <div>{booking.date.slice(0, 10)}</div>
+                          </Grid>
+
+                          <Grid item xs={2}>
+                            <div>{booking.number}</div>
+                          </Grid>
+                          <Grid item xs={2}>
+                            {convertTo12HourTime(booking.startTime)}
+                          </Grid>
+                          <Grid item xs={2}>
+                            {convertTo12HourTime(booking.endTime)}
+                          </Grid>
+                        </Grid>
+                      </>
+                    ))}
+                  </>
                 ) : (
-                  <div>Loading...</div>
+                  <div className="text-center">No Appointments For Today!</div>
                 )}
               </>
               <div className="flex justify-center items-center">
@@ -100,36 +120,41 @@ const EmployeeHome = () => {
                   id="myButton"
                   className="shadow-md border-skyblue bg-skyblue text-black py-2 px-4 hover:bg-skyblue mt-6"
                   onClick={() => {
-                    Navigate("/calendar");
+                    if (isManager) {
+                      Navigate("/employee/calendar");
+                    } else {
+                      Navigate("/calendar");
+                    }
                   }}
                 >
                   View Full Calendar
                 </button>
               </div>
             </div>
-            <div className="border-skyblue ml-[10%]">
-              <div className="flex w-50">
-                <div className="w-full mx-2">
-                  <div className="border-skyblue border-2  min-w-50 bg-white px-14 py-8 text-black items-center flex-col ">
-                    <p className="font-bold p-14 flex self-center">
-                      Employee Information:
-                    </p>
-
-                    <p className="p-2">
-                      <span className="mr-2">Name:</span>
-                      {employee.firstname} {employee.lastName}
-                    </p>
-                    <p className="p-2">
-                      <span className="mr-2">Email:</span>
-                      {employee.email}
-                    </p>
-                    <p className="p-2">
-                      <span className="mr-2">Phone:</span>
-                      {employee.number}
-                    </p>
-                  </div>
-                </div>
-              </div>
+            <div className="mr-6 border-skyblue border w-full  bg-[#282c34]  max-w-[350px]  rounded-lg">
+              <p className="my-6 mx-2 text-lg">
+                Name:{" "}
+                <strong>
+                  {employee.firstname} {employee.lastname}
+                </strong>
+              </p>
+              <p className="my-6 mx-2 text-lg">
+                Email Address: <strong>{employee.email}</strong>
+              </p>
+              <p className="my-6 mx-2 text-lg">
+                Phone Number: <strong>{employee.number}</strong>
+              </p>
+              <p className="my-6 mx-2 text-lg">
+                Branch ID: <strong>{employee.branchId}</strong>
+              </p>
+              <p className="my-6 mx-2 text-lg">
+                Role:{" "}
+                <strong>{employee.role === 1 ? "Manager" : "Employee"}</strong>
+              </p>
+              <p className="my-6 mx-2 text-lg">
+                Status:{" "}
+                <strong>{employee.current ? "Active" : "Not Active"}</strong>
+              </p>
             </div>
           </div>
         </div>

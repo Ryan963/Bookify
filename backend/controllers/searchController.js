@@ -12,9 +12,6 @@ const getTopCompanies = async (req, res) => {
       console.error(`Connection error ${err.code}`);
     });
     const { city } = req.body;
-    // const query =
-    //   "SELECT b.id AS branchId, COUNT(*) AS bookingCount, c.id AS companyId, c.name AS companyName FROM Branch b JOIN Company c ON b.companyId = c.id JOIN Bookings bk ON b.id = bk.branchId WHERE b.city = ? GROUP BY b.id ORDER BY bookingCount DESC LIMIT 10;";
-    // **Temp Query until there is branches in the database
     // TODO: Fix this to use the actual query and edit it so it works
     const query =
       "SELECT id, name, number, email, homePic, description from Company";
@@ -95,33 +92,33 @@ const searchService = async (req, res) => {
       [service.name]
     );
 
-    if (longitude && latitude) {
-      const userLocation = {
-        latitude: parseFloat(latitude),
-        longitude: parseFloat(longitude),
-      };
-      results = results.filter((company) =>
-        isLocationWithinRadius(
-          parseFloat(company.branchLatitude),
-          parseFloat(company.branchLongitude),
-          30,
-          userLocation.latitude,
-          userLocation.longitude
-        )
-      );
-      // Sort companies by distancexw
-      results.sort((a, b) => {
-        const distanceA = calculateDistance(userLocation, {
-          latitude: parseFloat(a.branchLatitude),
-          longitude: parseFloat(a.branchLongitude),
-        });
-        const distanceB = calculateDistance(userLocation, {
-          latitude: parseFloat(b.branchLatitude),
-          longitude: parseFloat(b.branchLongitude),
-        });
-        return distanceA - distanceB;
-      });
-    }
+    // if (longitude && latitude) {
+    //   const userLocation = {
+    //     latitude: parseFloat(latitude),
+    //     longitude: parseFloat(longitude),
+    //   };
+    //   results = results.filter((company) =>
+    //     isLocationWithinRadius(
+    //       parseFloat(company.branchLatitude),
+    //       parseFloat(company.branchLongitude),
+    //       30,
+    //       userLocation.latitude,
+    //       userLocation.longitude
+    //     )
+    //   );
+    //   // Sort companies by distance
+    //   results.sort((a, b) => {
+    //     const distanceA = calculateDistance(userLocation, {
+    //       latitude: parseFloat(a.branchLatitude),
+    //       longitude: parseFloat(a.branchLongitude),
+    //     });
+    //     const distanceB = calculateDistance(userLocation, {
+    //       latitude: parseFloat(b.branchLatitude),
+    //       longitude: parseFloat(b.branchLongitude),
+    //     });
+    //     return distanceA - distanceB;
+    //   });
+    // }
 
     for (let i = 0; i < results.length; i++) {
       if (results[i].homePic) {
